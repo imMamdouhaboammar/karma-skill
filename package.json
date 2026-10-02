@@ -1,6 +1,6 @@
 {
   "name": "find-karma",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Offline-first contextual discovery of curated AI coding skills and plugins",
   "type": "module",
   "main": "bin/cli.js",

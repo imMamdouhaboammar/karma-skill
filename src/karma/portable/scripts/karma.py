@@ -353,7 +353,7 @@ def make_parser() -> argparse.ArgumentParser:
     i.add_argument('id'); i.add_argument('--agent',choices=AGENTS,required=True)
     i.add_argument('--execute',action='store_true',help='Execute approved skills CLI install')
     i.add_argument('--yes',action='store_true',help='Confirm reviewed external installation')
-    a=sub.add_parser('init-agent',help='Copy self-contained find-karma skill into this project')
+    a=sub.add_parser('init-agent',aliases=['init'],help='Copy self-contained find-karma skill into this project')
     a.add_argument('--project',default='.')
     a.add_argument('--agent',choices=AGENTS,default='codex')
     a.add_argument('--dry-run',action='store_true'); a.add_argument('--force',action='store_true')
@@ -433,7 +433,7 @@ def main(argv: list[str] | None=None) -> int:
             print('Executing approved installer in current directory...',flush=True)
             completed=subprocess.run(cmd,check=False)
             return completed.returncode
-        elif args.command=='init-agent':
+        elif args.command in ('init-agent', 'init'):
             root=Path(args.project).expanduser().resolve(strict=True)
             if not root.is_dir(): raise ValueError('Project root is not a directory')
             dest=root/AGENT_PATHS[args.agent]

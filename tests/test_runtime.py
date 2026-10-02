@@ -162,7 +162,56 @@ class KarmaTests(unittest.TestCase):
         self.assertTrue((self.root / '.windsurf/skills/find-karma/SKILL.md').exists())
         self.assertTrue((self.root / '.windsurf/skills/find-karma/scripts/karma.py').exists())
 
+    def test_init_alias_supports_all_agents(self):
+        rc = runtime.main(['init', '--project', str(self.root), '--agent', 'claude-code'])
+        self.assertEqual(rc, 0)
+        self.assertTrue((self.root / '.claude/skills/find-karma/SKILL.md').exists())
+
+    def test_init_dry_run_does_not_mutate_disk(self):
+        rc = runtime.main(['init', '--project', str(self.root), '--agent', 'cursor', '--dry-run'])
+        self.assertEqual(rc, 0)
+        self.assertFalse((self.root / '.cursor/skills/find-karma').exists())
+
+    def test_init_force_allows_overwrite(self):
+        # first init
+        rc1 = runtime.main(['init', '--project', str(self.root), '--agent', 'gemini'])
+        self.assertEqual(rc1, 0)
+        # re-init without force fails
+        rc2 = runtime.main(['init', '--project', str(self.root), '--agent', 'gemini'])
+        self.assertEqual(rc2, 2)
+        # re-init with force succeeds
+        rc3 = runtime.main(['init', '--project', str(self.root), '--agent', 'gemini', '--force'])
+        self.assertEqual(rc3, 0)
+
+    def test_install_execute_without_yes_raises_error(self):
+        with patch('subprocess.run') as mock_run:
+            rc = runtime.main(['install', 'matt-engineering', '--agent', 'codex', '--execute'])
+            self.assertEqual(rc, 2)
+            mock_run.assert_not_called()
+
+    def test_install_unreviewed_candidate_raises_error(self):
+        # Even if someone asks to install an unreviewed candidate, it must be rejected
+        with patch('karma.runtime.load_catalog', return_value=[{
+            'id': 'cand', 'name': 'Candidate', 'source': 'https://github.com/a/b',
+            'kind': 'skill', 'status': 'candidate', 'signals': ['task:security'],
+            'tags': ['security'], 'lane': 'security', 'summary': 's', 'benefit': 'b',
+            'evidence': 'e', 'install': {'method': 'skills', 'repo': 'a/b'}
+        }]):
+            rc = runtime.main(['install', 'cand', '--agent', 'codex'])
+            self.assertEqual(rc, 2)
+
+    def test_install_approved_runs_expected_cmd(self):
+        with patch('subprocess.run') as mock_run, patch('shutil.which', return_value='/usr/local/bin/npx'):
+            mock_run.return_value.returncode = 0
+            rc = runtime.main(['install', 'matt-engineering', '--agent', 'codex', '--execute', '--yes'])
+            self.assertEqual(rc, 0)
+            mock_run.assert_called_once()
+            args = mock_run.call_args[0][0]
+            self.assertEqual(args[:4], ['npx', '--yes', 'skills', 'add'])
+            self.assertEqual(args[-3:], ['-a', 'codex', '-y'])
+
 
 if __name__=='__main__':
     unittest.main()
+
 
