@@ -605,6 +605,742 @@
       }
     },
     {
+      "id": "vercel-agent-browser",
+      "name": "Vercel Agent Browser",
+      "source": "https://github.com/vercel-labs/agent-browser",
+      "kind": "skill",
+      "lane": "browser",
+      "summary": "Browser automation CLI for AI agents to navigate pages, fill forms, capture screenshots, and test web apps.",
+      "benefit": "Browser automation CLI for AI agents to navigate pages, fill forms, capture screenshots, and test web apps.",
+      "signals": [
+        "task:browser",
+        "task:qa",
+        "task:frontend",
+        "task:testing"
+      ],
+      "tags": [
+        "browser",
+        "automation",
+        "playwright",
+        "e2e",
+        "scraping"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/vercel-labs/agent-browser#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "vercel-labs/agent-browser",
+        "skill": "agent-browser"
+      }
+    },
+    {
+      "id": "anthropic-webapp-testing",
+      "name": "Anthropic Web App Testing",
+      "source": "https://github.com/anthropics/skills",
+      "kind": "skill",
+      "lane": "webapp-testing",
+      "summary": "Toolkit for interacting with and testing local web applications using Playwright.",
+      "benefit": "Toolkit for interacting with and testing local web applications using Playwright.",
+      "signals": [
+        "task:testing",
+        "task:browser",
+        "task:qa",
+        "task:frontend"
+      ],
+      "tags": [
+        "playwright",
+        "testing",
+        "e2e",
+        "qa",
+        "browser",
+        "webapp"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/anthropics/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "anthropics/skills",
+        "skill": "webapp-testing"
+      }
+    },
+    {
+      "id": "vercel-react-best-practices",
+      "name": "Vercel React Best Practices",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "kind": "skill",
+      "lane": "react-best-practices",
+      "summary": "React and Next.",
+      "benefit": "React and Next.js performance optimization and code architecture guidelines from Vercel Engineering.",
+      "signals": [
+        "framework:nextjs",
+        "framework:react",
+        "task:frontend",
+        "task:quality"
+      ],
+      "tags": [
+        "react",
+        "nextjs",
+        "performance",
+        "optimization",
+        "frontend"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "vercel-labs/agent-skills",
+        "skill": "vercel-react-best-practices"
+      }
+    },
+    {
+      "id": "vercel-composition-patterns",
+      "name": "Vercel React Composition Patterns",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "kind": "skill",
+      "lane": "react-patterns",
+      "summary": "Scalable React composition patterns, compound components, render props, and React 19 architecture.",
+      "benefit": "Scalable React composition patterns, compound components, render props, and React 19 architecture.",
+      "signals": [
+        "framework:react",
+        "task:frontend",
+        "task:architecture"
+      ],
+      "tags": [
+        "react",
+        "composition",
+        "components",
+        "architecture"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "vercel-labs/agent-skills",
+        "skill": "vercel-composition-patterns"
+      }
+    },
+    {
+      "id": "anthropic-frontend-design",
+      "name": "Anthropic Frontend Design",
+      "source": "https://github.com/anthropics/skills",
+      "kind": "skill",
+      "lane": "visual-design",
+      "summary": "Guidance for distinctive, intentional visual design, typography, and aesthetic choices.",
+      "benefit": "Guidance for distinctive, intentional visual design, typography, and aesthetic choices.",
+      "signals": [
+        "task:frontend",
+        "task:design",
+        "task:quality"
+      ],
+      "tags": [
+        "design",
+        "ui",
+        "typography",
+        "aesthetic",
+        "styling"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/anthropics/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "anthropics/skills",
+        "skill": "frontend-design"
+      }
+    },
+    {
+      "id": "web-design-guidelines",
+      "name": "Web Interface Guidelines",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "kind": "skill",
+      "lane": "interface-guidelines",
+      "summary": "Review UI code for Web Interface Guidelines compliance, accessibility, and UX polish.",
+      "benefit": "Review UI code for Web Interface Guidelines compliance, accessibility, and UX polish.",
+      "signals": [
+        "task:frontend",
+        "task:design",
+        "task:quality"
+      ],
+      "tags": [
+        "guidelines",
+        "accessibility",
+        "ui",
+        "ux",
+        "design"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "vercel-labs/agent-skills",
+        "skill": "web-design-guidelines"
+      }
+    },
+    {
+      "id": "superpowers-tdd",
+      "name": "Superpowers TDD",
+      "source": "https://github.com/obra/superpowers",
+      "kind": "skill",
+      "lane": "tdd-workflow",
+      "summary": "Strict test-driven development workflow before writing implementation code.",
+      "benefit": "Strict test-driven development workflow before writing implementation code.",
+      "signals": [
+        "task:testing",
+        "task:quality",
+        "task:debugging"
+      ],
+      "tags": [
+        "tdd",
+        "testing",
+        "unit",
+        "red-green-refactor"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/obra/superpowers#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "obra/superpowers",
+        "skill": "test-driven-development"
+      }
+    },
+    {
+      "id": "antfu-vitest",
+      "name": "Vitest by Antfu",
+      "source": "https://github.com/antfu/skills",
+      "kind": "skill",
+      "lane": "unit-testing",
+      "summary": "Fast unit testing workflow powered by Vite with Jest-compatible API and coverage.",
+      "benefit": "Fast unit testing workflow powered by Vite with Jest-compatible API and coverage.",
+      "signals": [
+        "task:testing",
+        "task:quality",
+        "language:typescript",
+        "language:javascript"
+      ],
+      "tags": [
+        "vitest",
+        "unit",
+        "tests",
+        "testing",
+        "vite"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/antfu/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "antfu/skills",
+        "skill": "vitest"
+      }
+    },
+    {
+      "id": "supabase-postgres",
+      "name": "Supabase Postgres Best Practices",
+      "source": "https://github.com/supabase/agent-skills",
+      "kind": "skill",
+      "lane": "database",
+      "summary": "Postgres best practices for schema design, migrations, RLS policies, indexing, and query performance.",
+      "benefit": "Postgres best practices for schema design, migrations, RLS policies, indexing, and query performance.",
+      "signals": [
+        "task:database",
+        "task:security",
+        "task:quality"
+      ],
+      "tags": [
+        "postgres",
+        "postgresql",
+        "database",
+        "schema",
+        "migrations",
+        "rls",
+        "sql"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/supabase/agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "supabase/agent-skills",
+        "skill": "supabase-postgres-best-practices"
+      }
+    },
+    {
+      "id": "supabase-fullstack",
+      "name": "Supabase Platform",
+      "source": "https://github.com/supabase/agent-skills",
+      "kind": "skill",
+      "lane": "baas",
+      "summary": "Supabase backend integration for Auth, Edge Functions, Realtime, Storage, and SSR in React/Next.",
+      "benefit": "Supabase backend integration for Auth, Edge Functions, Realtime, Storage, and SSR in React/Next.js.",
+      "signals": [
+        "task:database",
+        "task:backend",
+        "task:security",
+        "framework:nextjs",
+        "framework:react"
+      ],
+      "tags": [
+        "supabase",
+        "backend",
+        "auth",
+        "database",
+        "realtime",
+        "storage"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/supabase/agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "supabase/agent-skills",
+        "skill": "supabase"
+      }
+    },
+    {
+      "id": "prisma-setup",
+      "name": "Prisma Database Setup",
+      "source": "https://github.com/prisma/skills",
+      "kind": "skill",
+      "lane": "orm",
+      "summary": "Database schema design, connection configuration, and migration management with Prisma ORM.",
+      "benefit": "Database schema design, connection configuration, and migration management with Prisma ORM.",
+      "signals": [
+        "task:database",
+        "language:typescript",
+        "task:architecture"
+      ],
+      "tags": [
+        "prisma",
+        "orm",
+        "database",
+        "schema",
+        "migrations",
+        "sql"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/prisma/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "prisma/skills",
+        "skill": "prisma-database-setup"
+      }
+    },
+    {
+      "id": "copilot-docker",
+      "name": "Multi-Stage Dockerfile",
+      "source": "https://github.com/github/awesome-copilot",
+      "kind": "skill",
+      "lane": "devops",
+      "summary": "Best practices for writing efficient, secure multi-stage Dockerfiles and container workflows.",
+      "benefit": "Best practices for writing efficient, secure multi-stage Dockerfiles and container workflows.",
+      "signals": [
+        "task:devops",
+        "task:ci",
+        "task:security"
+      ],
+      "tags": [
+        "docker",
+        "dockerfile",
+        "containerization",
+        "devops",
+        "ci"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/github/awesome-copilot#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "github/awesome-copilot",
+        "skill": "multi-stage-dockerfile"
+      }
+    },
+    {
+      "id": "vercel-deploy",
+      "name": "Deploy to Vercel",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "kind": "skill",
+      "lane": "deployment",
+      "summary": "Deploy applications and create preview deployments on Vercel with proper environment configuration.",
+      "benefit": "Deploy applications and create preview deployments on Vercel with proper environment configuration.",
+      "signals": [
+        "task:devops",
+        "task:ci",
+        "task:frontend",
+        "framework:nextjs"
+      ],
+      "tags": [
+        "vercel",
+        "deploy",
+        "deployment",
+        "cloud",
+        "preview"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "vercel-labs/agent-skills",
+        "skill": "deploy-to-vercel"
+      }
+    },
+    {
+      "id": "anthropic-doc-coauthoring",
+      "name": "Anthropic Documentation Co-authoring",
+      "source": "https://github.com/anthropics/skills",
+      "kind": "skill",
+      "lane": "documentation",
+      "summary": "Structured workflow for drafting technical documentation, RFCs, specs, and architectural proposals.",
+      "benefit": "Structured workflow for drafting technical documentation, RFCs, specs, and architectural proposals.",
+      "signals": [
+        "task:docs",
+        "task:planning",
+        "task:architecture"
+      ],
+      "tags": [
+        "docs",
+        "documentation",
+        "specs",
+        "rfc",
+        "writing",
+        "proposals"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/anthropics/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "anthropics/skills",
+        "skill": "doc-coauthoring"
+      }
+    },
+    {
+      "id": "anthropic-mcp-builder",
+      "name": "Anthropic MCP Server Builder",
+      "source": "https://github.com/anthropics/skills",
+      "kind": "skill",
+      "lane": "mcp-authoring",
+      "summary": "Guide for creating high-quality Model Context Protocol (MCP) servers in Python and TypeScript.",
+      "benefit": "Guide for creating high-quality Model Context Protocol (MCP) servers in Python and TypeScript.",
+      "signals": [
+        "task:plugin",
+        "task:architecture",
+        "language:python",
+        "language:typescript"
+      ],
+      "tags": [
+        "mcp",
+        "tools",
+        "server",
+        "protocol",
+        "agent"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/anthropics/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "anthropics/skills",
+        "skill": "mcp-builder"
+      },
+      "require_any": [
+        "task:plugin",
+        "task:architecture"
+      ]
+    },
+    {
+      "id": "superpowers-git-worktrees",
+      "name": "Superpowers Git Worktrees",
+      "source": "https://github.com/obra/superpowers",
+      "kind": "skill",
+      "lane": "git-worktrees",
+      "summary": "Isolate feature work and parallel tasks using native git worktrees without repo state pollution.",
+      "benefit": "Isolate feature work and parallel tasks using native git worktrees without repo state pollution.",
+      "signals": [
+        "task:orchestration",
+        "task:planning",
+        "task:ci"
+      ],
+      "tags": [
+        "git",
+        "worktrees",
+        "branching",
+        "isolation",
+        "workflow"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/obra/superpowers#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "obra/superpowers",
+        "skill": "using-git-worktrees"
+      }
+    },
+    {
+      "id": "superpowers-systematic-debugging",
+      "name": "Superpowers Systematic Debugging",
+      "source": "https://github.com/obra/superpowers",
+      "kind": "skill",
+      "lane": "debugging-workflow",
+      "summary": "Systematic bug diagnosis using competing hypotheses, evidence collection, and root cause analysis.",
+      "benefit": "Systematic bug diagnosis using competing hypotheses, evidence collection, and root cause analysis.",
+      "signals": [
+        "task:debugging",
+        "task:testing",
+        "task:quality"
+      ],
+      "tags": [
+        "debugging",
+        "root-cause",
+        "investigation",
+        "diagnosis"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/obra/superpowers#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "obra/superpowers",
+        "skill": "systematic-debugging"
+      }
+    },
+    {
+      "id": "superpowers-brainstorming",
+      "name": "Superpowers Brainstorming",
+      "source": "https://github.com/obra/superpowers",
+      "kind": "skill",
+      "lane": "ideation",
+      "summary": "Explore user intent, requirements, architecture, and design tradeoffs before implementation.",
+      "benefit": "Explore user intent, requirements, architecture, and design tradeoffs before implementation.",
+      "signals": [
+        "task:planning",
+        "task:architecture",
+        "task:design"
+      ],
+      "tags": [
+        "brainstorming",
+        "planning",
+        "requirements",
+        "design"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/obra/superpowers#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "obra/superpowers",
+        "skill": "brainstorming"
+      }
+    },
+    {
+      "id": "antfu-vue",
+      "name": "Vue 3 Composition API",
+      "source": "https://github.com/antfu/skills",
+      "kind": "skill",
+      "lane": "vue-framework",
+      "summary": "Vue 3 Composition API, script setup macros, reactivity system, and built-in components.",
+      "benefit": "Vue 3 Composition API, script setup macros, reactivity system, and built-in components.",
+      "signals": [
+        "task:frontend",
+        "framework:vue",
+        "language:typescript"
+      ],
+      "tags": [
+        "vue",
+        "vue3",
+        "reactivity",
+        "frontend",
+        "composition"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/antfu/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "antfu/skills",
+        "skill": "vue"
+      }
+    },
+    {
+      "id": "antfu-vite",
+      "name": "Vite Build Tooling",
+      "source": "https://github.com/antfu/skills",
+      "kind": "skill",
+      "lane": "vite-bundler",
+      "summary": "Vite build tool configuration, plugin API, SSR, and Rolldown migration patterns.",
+      "benefit": "Vite build tool configuration, plugin API, SSR, and Rolldown migration patterns.",
+      "signals": [
+        "task:frontend",
+        "language:typescript",
+        "task:ci"
+      ],
+      "tags": [
+        "vite",
+        "bundler",
+        "build",
+        "ssr",
+        "plugins"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/antfu/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "antfu/skills",
+        "skill": "vite"
+      }
+    },
+    {
+      "id": "anthropic-pdf",
+      "name": "Anthropic PDF Processing",
+      "source": "https://github.com/anthropics/skills",
+      "kind": "skill",
+      "lane": "pdf-tools",
+      "summary": "Extract text and tables from PDFs, merge, split, fill forms, and run OCR on scanned documents.",
+      "benefit": "Extract text and tables from PDFs, merge, split, fill forms, and run OCR on scanned documents.",
+      "signals": [
+        "task:docs",
+        "task:research"
+      ],
+      "tags": [
+        "pdf",
+        "extraction",
+        "ocr",
+        "documents",
+        "forms"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/anthropics/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "anthropics/skills",
+        "skill": "pdf"
+      }
+    },
+    {
+      "id": "anthropic-docx",
+      "name": "Anthropic Word Document Generator",
+      "source": "https://github.com/anthropics/skills",
+      "kind": "skill",
+      "lane": "docx-tools",
+      "summary": "Create, read, edit, and format professional Word (.",
+      "benefit": "Create, read, edit, and format professional Word (.docx) documents, templates, and reports.",
+      "signals": [
+        "task:docs",
+        "task:quality"
+      ],
+      "tags": [
+        "word",
+        "docx",
+        "reports",
+        "documents",
+        "formatting"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/anthropics/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "anthropics/skills",
+        "skill": "docx"
+      }
+    },
+    {
+      "id": "anthropic-xlsx",
+      "name": "Anthropic Excel & Spreadsheet Tools",
+      "source": "https://github.com/anthropics/skills",
+      "kind": "skill",
+      "lane": "spreadsheet-tools",
+      "summary": "Open, analyze, format, and compute formulas in Excel spreadsheets (.",
+      "benefit": "Open, analyze, format, and compute formulas in Excel spreadsheets (.xlsx, .csv).",
+      "signals": [
+        "task:statistics",
+        "task:research"
+      ],
+      "tags": [
+        "excel",
+        "spreadsheet",
+        "xlsx",
+        "csv",
+        "data",
+        "formulas"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/anthropics/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "anthropics/skills",
+        "skill": "xlsx"
+      }
+    },
+    {
+      "id": "anthropic-skill-creator",
+      "name": "Anthropic Skill Creator",
+      "source": "https://github.com/anthropics/skills",
+      "kind": "skill",
+      "lane": "skill-evaluation",
+      "summary": "Create new agent skills, refine descriptions, and measure skill performance with evals.",
+      "benefit": "Create new agent skills, refine descriptions, and measure skill performance with evals.",
+      "signals": [
+        "task:skills",
+        "task:plugin",
+        "task:evals"
+      ],
+      "tags": [
+        "skills",
+        "authoring",
+        "evals",
+        "benchmarking"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/anthropics/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "anthropics/skills",
+        "skill": "skill-creator"
+      },
+      "require_any": [
+        "task:skills",
+        "task:plugin",
+        "task:evals"
+      ]
+    },
+    {
       "id": "security-audit",
       "name": "Security Audit Skill",
       "source": "https://github.com/teng-lin/security-audit-skill",

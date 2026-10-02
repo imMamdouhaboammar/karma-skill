@@ -210,8 +210,24 @@ class KarmaTests(unittest.TestCase):
             self.assertEqual(args[:4], ['npx', '--yes', 'skills', 'add'])
             self.assertEqual(args[-3:], ['-a', 'codex', '-y'])
 
+    def test_detect_database_signals_from_prisma_and_supabase(self):
+        self.write('prisma/schema.prisma', 'datasource db { provider = "postgresql" }')
+        got = runtime.detect_project(self.root)
+        self.assertIn('task:database', got)
+
+    def test_goal_signals_detect_database_docs_and_devops(self):
+        db_signs = runtime._goal_signals('postgres schema migration with supabase')
+        self.assertIn('task:database', db_signs)
+
+        docs_signs = runtime._goal_signals('co-authoring documentation and technical specs')
+        self.assertIn('task:docs', docs_signs)
+
+        devops_signs = runtime._goal_signals('multi-stage docker container deploy')
+        self.assertIn('task:devops', devops_signs)
+
 
 if __name__=='__main__':
     unittest.main()
+
 
 

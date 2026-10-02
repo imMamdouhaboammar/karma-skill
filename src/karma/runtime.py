@@ -43,7 +43,7 @@ SOURCE_FILES = {'.ts':'language:typescript','.tsx':'language:typescript',
     '.vue':'task:frontend','.svelte':'task:frontend', '.sol':'task:security',
     '.css':'task:frontend','.scss':'task:frontend',
     '.astro':'task:frontend'}
-GOAL_WEIGHTS = {'task:frontend': 15, 'task:motion': 18, 'task:video': 12, 'task:security': 16, 'task:testing': 14, 'task:skills': 15, 'task:architecture': 13, 'task:research': 12, 'task:evals': 14, 'task:review': 5, 'task:quality': 3}
+GOAL_WEIGHTS = {'task:frontend': 15, 'task:motion': 18, 'task:video': 12, 'task:security': 16, 'task:testing': 14, 'task:skills': 15, 'task:architecture': 13, 'task:research': 12, 'task:evals': 14, 'task:review': 5, 'task:quality': 3, 'task:database': 15, 'task:devops': 13, 'task:docs': 12, 'task:browser': 14}
 GOAL_TERMS = {
     'task:security': 'security secure vulnerability vulnerabilities audit secret secrets auth threat cve hardening penetration supply-chain solidity أمان أمن ثغرات',
     'task:testing': 'testing tests test tdd regression pytest jest vitest unit integration coverage اختبارات اختبار',
@@ -69,6 +69,9 @@ GOAL_TERMS = {
     'task:governance': 'governance control approvals permissions policy guardrails',
     'task:portfolio': 'portfolio cv resume personal-site بورتفوليو',
     'task:discovery': 'discover find recommend selection shortlist discover-skills',
+    'task:database': 'database db sql postgres postgresql prisma supabase migration migrations schema rls queries query قاعدة بيانات جداول',
+    'task:docs': 'docs documentation readme changelog specs spec doc coauthoring api-docs rfc proposals توثيق مستندات',
+    'task:devops': 'docker container containerize deployment deploy kubernetes devops cloud vercel infra infrastructure نشر حاويات',
 }
 
 
@@ -157,10 +160,14 @@ def detect_project(project: Path) -> set[str]:
             if rel.startswith('.github/workflows/'):
                 found.add('task:ci')
             if filename == 'SKILL.md': found.add('task:skills')
+            if filename in ('schema.prisma',) or filename.endswith('.prisma'):
+                found.update(('task:database', 'language:typescript'))
+            if filename in ('supabase.toml',):
+                found.add('task:database')
             if filename in ('playwright.config.ts','playwright.config.js','playwright.config.mjs'):
                 found.update(('task:browser','task:qa'))
             if filename in ('Dockerfile','docker-compose.yml','compose.yaml'):
-                found.add('task:ci')
+                found.update(('task:ci', 'task:devops'))
             if filename in ('next.config.js','next.config.mjs','next.config.ts'):
                 found.update(('framework:nextjs','task:frontend'))
             if filename == 'Cargo.toml': found.add('language:rust')
@@ -173,10 +180,14 @@ def detect_project(project: Path) -> set[str]:
     if 'next' in deps: found.update(('framework:nextjs','framework:react','task:frontend'))
     if 'react' in deps: found.update(('framework:react','task:frontend'))
     if 'vue' in deps or 'svelte' in deps or 'astro' in deps: found.add('task:frontend')
+    if '@supabase/supabase-js' in deps or '@prisma/client' in deps or 'prisma' in deps:
+        found.add('task:database')
     if 'typescript' in deps or 'tsconfig.json' in names: found.add('language:typescript')
     if 'playwright' in ' '.join(deps).lower(): found.update(('task:browser','task:qa'))
     if any(n in names for n in ('remotion.config.ts','remotion.config.js')): found.update(('task:motion','task:video'))
-    if 'skills' in (d.name for d in root.iterdir() if d.is_dir() and not d.is_symlink()): found.add('task:skills')
+    dirs_present = {d.name for d in root.iterdir() if d.is_dir() and not d.is_symlink()}
+    if 'skills' in dirs_present: found.add('task:skills')
+    if 'prisma' in dirs_present or 'supabase' in dirs_present: found.add('task:database')
     if 'AGENTS.md' in (p.name for p in root.iterdir() if p.is_file()): found.add('task:governance')
     if not found: found.add('task:planning')
     return found
@@ -189,8 +200,15 @@ def _goal_signals(goal: str) -> set[str]:
         if words.intersection(terms.split()): signs.add(k)
     if 'next' in words or 'nextjs' in words or 'next.js' in words: signs.add('framework:nextjs')
     if 'react' in words: signs.add('framework:react')
+    if 'vue' in words: signs.update(('framework:vue', 'task:frontend'))
     if 'rust' in words: signs.add('language:rust')
     if 'python' in words: signs.add('language:python')
+    if any(w in words for w in ('docker', 'container', 'deploy', 'deployment', 'devops')):
+        signs.add('task:devops')
+    if any(w in words for w in ('postgres', 'postgresql', 'supabase', 'prisma', 'sql', 'database', 'migrations', 'migration', 'schema')):
+        signs.add('task:database')
+    if any(w in words for w in ('docs', 'documentation', 'specs', 'spec', 'coauthoring', 'readme', 'changelog')):
+        signs.add('task:docs')
     return signs
 
 
