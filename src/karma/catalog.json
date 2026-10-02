@@ -1,0 +1,984 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-02",
+  "review_policy": "Docs/structure review, not guaranteed performance; candidates excluded from recommendations.",
+  "items": [
+    {
+      "id": "matt-engineering",
+      "name": "Matt Pocock Engineering Skills",
+      "source": "https://github.com/mattpocock/skills",
+      "kind": "skill",
+      "lane": "engineering",
+      "summary": "Focused engineering routines for requirement clarification, architecture, TDD and review.",
+      "benefit": "Focused engineering routines for requirement clarification, architecture, TDD and review.",
+      "signals": [
+        "task:planning",
+        "task:testing",
+        "task:architecture",
+        "task:review",
+        "language:typescript"
+      ],
+      "tags": [
+        "engineering",
+        "review",
+        "tdd",
+        "typescript"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/mattpocock/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "mattpocock/skills"
+      }
+    },
+    {
+      "id": "matt-tdd",
+      "name": "Matt TDD",
+      "source": "https://github.com/mattpocock/skills",
+      "kind": "skill",
+      "lane": "testing",
+      "summary": "Structured red-green-refactor cycles for code changes, guided by meaningful test evidence.",
+      "benefit": "Structured red-green-refactor cycles for code changes, guided by meaningful test evidence.",
+      "signals": [
+        "task:testing",
+        "task:debugging",
+        "task:quality"
+      ],
+      "tags": [
+        "tdd",
+        "tests",
+        "regression"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/mattpocock/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "mattpocock/skills",
+        "skill": "tdd"
+      }
+    },
+    {
+      "id": "trailofbits-security",
+      "name": "Trail of Bits Security Marketplace",
+      "source": "https://github.com/trailofbits/skills",
+      "kind": "plugin",
+      "lane": "security",
+      "summary": "Specialist code-audit plugins including differential review, static analysis and supply-chain risk.",
+      "benefit": "Specialist code-audit plugins including differential review, static analysis and supply-chain risk.",
+      "signals": [
+        "task:security",
+        "task:review",
+        "task:ci",
+        "language:rust"
+      ],
+      "tags": [
+        "security",
+        "audit",
+        "threat"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/trailofbits/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "manual",
+        "repo": "trailofbits/skills",
+        "instructions": "/plugin marketplace add trailofbits/skills (Claude Code); then /plugin menu. Codex: codex plugin marketplace add trailofbits/skills, then codex plugin list and choose a plugin."
+      }
+    },
+    {
+      "id": "claude-plugin-review",
+      "name": "Trail of Bits Claude Plugins",
+      "source": "https://github.com/trailofbits/skills",
+      "kind": "plugin",
+      "lane": "claude-workflow",
+      "summary": "Browse selective security plugins inside Claude Code instead of bulk installing.",
+      "benefit": "Browse selective security plugins inside Claude Code instead of bulk installing.",
+      "signals": [
+        "task:security",
+        "task:review"
+      ],
+      "tags": [
+        "claude",
+        "plugins",
+        "security"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/trailofbits/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "manual",
+        "repo": "trailofbits/skills",
+        "instructions": "/plugin marketplace add trailofbits/skills; /plugin menu; select only required plugin."
+      },
+      "hosts": [
+        "claude-code"
+      ]
+    },
+    {
+      "id": "science-skills",
+      "name": "Scientific Agent Skills",
+      "source": "https://github.com/K-Dense-AI/scientific-agent-skills",
+      "kind": "skill",
+      "lane": "research",
+      "summary": "Domain workflows for experiment and scientific research tasks.",
+      "benefit": "Domain workflows for experiment and scientific research tasks.",
+      "signals": [
+        "task:research",
+        "language:python",
+        "task:statistics"
+      ],
+      "tags": [
+        "research",
+        "experiments",
+        "scientific"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/K-Dense-AI/scientific-agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "K-Dense-AI/scientific-agent-skills"
+      }
+    },
+    {
+      "id": "motion-graphics",
+      "name": "Motion Graphics Skills",
+      "source": "https://github.com/imMamdouhaboammar/motion-graphics-skills",
+      "kind": "skill",
+      "lane": "motion",
+      "summary": "Creative direction and programmatic animation production using a large skills pack.",
+      "benefit": "Creative direction and programmatic animation production using a large skills pack.",
+      "signals": [
+        "task:motion",
+        "task:video",
+        "task:design"
+      ],
+      "tags": [
+        "motion",
+        "animation",
+        "video",
+        "graphics"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/imMamdouhaboammar/motion-graphics-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "imMamdouhaboammar/motion-graphics-skills"
+      }
+    },
+    {
+      "id": "dokion",
+      "name": "Dokion Playbook Runtime",
+      "source": "https://github.com/imMamdouhaboammar/dokion",
+      "kind": "tool",
+      "lane": "governance",
+      "summary": "User-authored hardening playbooks with explicit approvals and independent verification.",
+      "benefit": "User-authored hardening playbooks with explicit approvals and independent verification.",
+      "signals": [
+        "task:security",
+        "task:quality",
+        "task:governance",
+        "task:ci"
+      ],
+      "tags": [
+        "playbooks",
+        "governance",
+        "security"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/imMamdouhaboammar/dokion#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "manual",
+        "repo": "imMamdouhaboammar/dokion",
+        "instructions": "Docs specify bun add --global dokion@0.3.0 (requires Bun >=1.3.14). Read the compatibility matrix and approve playbook before running."
+      },
+      "require_any": [
+        "task:governance",
+        "task:security"
+      ]
+    },
+    {
+      "id": "agent-kernel",
+      "name": "Agent Kernel",
+      "source": "https://github.com/imMamdouhaboammar/agent-kernel",
+      "kind": "skill",
+      "lane": "governance",
+      "summary": "Persistent agent governance, memory, lessons and guardrails within coding repos.",
+      "benefit": "Persistent agent governance, memory, lessons and guardrails within coding repos.",
+      "signals": [
+        "task:governance",
+        "task:orchestration",
+        "task:architecture"
+      ],
+      "tags": [
+        "memory",
+        "governance",
+        "agent"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/imMamdouhaboammar/agent-kernel#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "imMamdouhaboammar/agent-kernel"
+      }
+    },
+    {
+      "id": "delegate-team",
+      "name": "Delegate Team",
+      "source": "https://github.com/imMamdouhaboammar/delegate-team",
+      "kind": "skill",
+      "lane": "orchestration",
+      "summary": "Task routing and bounded multi-agent engineering collaboration.",
+      "benefit": "Task routing and bounded multi-agent engineering collaboration.",
+      "signals": [
+        "task:orchestration",
+        "task:planning",
+        "task:review"
+      ],
+      "tags": [
+        "orchestration",
+        "delegation",
+        "agents"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/imMamdouhaboammar/delegate-team#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "imMamdouhaboammar/delegate-team"
+      },
+      "require_any": [
+        "task:orchestration"
+      ]
+    },
+    {
+      "id": "skill-scanner",
+      "name": "Cisco Skill Scanner",
+      "source": "https://github.com/cisco-ai-defense/skill-scanner",
+      "kind": "tool",
+      "lane": "skill-security",
+      "summary": "Scan skill packages for suspicious instructions and risks before adoption.",
+      "benefit": "Scan skill packages for suspicious instructions and risks before adoption.",
+      "signals": [
+        "task:skills",
+        "task:security",
+        "task:plugin"
+      ],
+      "tags": [
+        "skills",
+        "scanner",
+        "supplychain"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/cisco-ai-defense/skill-scanner#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "manual",
+        "repo": "cisco-ai-defense/skill-scanner",
+        "instructions": "Follow pinned instructions in repository README; review scanner findings before installing any third-party skill."
+      },
+      "require_any": [
+        "task:skills",
+        "task:plugin"
+      ]
+    },
+    {
+      "id": "skillspector",
+      "name": "NVIDIA SkillSpector",
+      "source": "https://github.com/NVIDIA/SkillSpector",
+      "kind": "tool",
+      "lane": "skill-security",
+      "summary": "Security analysis for agent skill files and prompt-driven risks.",
+      "benefit": "Security analysis for agent skill files and prompt-driven risks.",
+      "signals": [
+        "task:skills",
+        "task:security",
+        "task:plugin"
+      ],
+      "tags": [
+        "skill",
+        "security",
+        "audit"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/NVIDIA/SkillSpector#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "manual",
+        "repo": "NVIDIA/SkillSpector",
+        "instructions": "Use the documented SkillSpector CLI in its README after checking Python/runtime requirements."
+      },
+      "require_any": [
+        "task:skills",
+        "task:plugin"
+      ]
+    },
+    {
+      "id": "eval-skills",
+      "name": "AI Evals Skills",
+      "source": "https://github.com/ai-evals-course/evals-skills",
+      "kind": "skill",
+      "lane": "evaluation",
+      "summary": "Plan and implement product-specific AI evaluations and measurable checks.",
+      "benefit": "Plan and implement product-specific AI evaluations and measurable checks.",
+      "signals": [
+        "task:evals",
+        "task:testing",
+        "task:llm",
+        "task:research"
+      ],
+      "tags": [
+        "evals",
+        "testing",
+        "llm"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/ai-evals-course/evals-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "ai-evals-course/evals-skills"
+      }
+    },
+    {
+      "id": "council",
+      "name": "Council",
+      "source": "https://github.com/kitze/council",
+      "kind": "skill",
+      "lane": "collaboration",
+      "summary": "Solicit explicit multi-agent viewpoints during demanding planning or design decisions.",
+      "benefit": "Solicit explicit multi-agent viewpoints during demanding planning or design decisions.",
+      "signals": [
+        "task:architecture",
+        "task:planning",
+        "task:orchestration"
+      ],
+      "tags": [
+        "architecture",
+        "planning",
+        "secondopinion"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/kitze/council#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "kitze/council"
+      }
+    },
+    {
+      "id": "ui-skills",
+      "name": "UI Skills",
+      "source": "https://github.com/ibelick/ui-skills",
+      "kind": "skill",
+      "lane": "frontend-quality",
+      "summary": "Design engineering skill guidance for visual polish and interface quality.",
+      "benefit": "Design engineering skill guidance for visual polish and interface quality.",
+      "signals": [
+        "task:frontend",
+        "framework:react",
+        "language:typescript",
+        "task:design"
+      ],
+      "tags": [
+        "ui",
+        "frontend",
+        "design"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/ibelick/ui-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "ibelick/ui-skills"
+      }
+    },
+    {
+      "id": "daymade-claude",
+      "name": "daymade Claude Skills",
+      "source": "https://github.com/daymade/claude-code-skills",
+      "kind": "skill",
+      "lane": "workflow",
+      "summary": "Specialized workflows for repo maintenance, QA, research and visual verification.",
+      "benefit": "Specialized workflows for repo maintenance, QA, research and visual verification.",
+      "signals": [
+        "task:debugging",
+        "task:review",
+        "task:qa"
+      ],
+      "tags": [
+        "claude",
+        "qa",
+        "review",
+        "skills"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/daymade/claude-code-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "manual",
+        "repo": "daymade/claude-code-skills",
+        "instructions": "Inspect the repo skills and plugin manifest, and select the specific skill via README or the skills CLI --list mode."
+      }
+    },
+    {
+      "id": "portfolio-interview",
+      "name": "Portfolio Interview",
+      "source": "https://github.com/imMamdouhaboammar/portfolio-interview",
+      "kind": "skill",
+      "lane": "frontend-quality",
+      "summary": "Interactive intake and portfolio implementation guidance.",
+      "benefit": "Interactive intake and portfolio implementation guidance.",
+      "signals": [
+        "task:portfolio",
+        "task:frontend",
+        "task:design"
+      ],
+      "tags": [
+        "portfolio",
+        "design",
+        "frontend"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/imMamdouhaboammar/portfolio-interview#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "imMamdouhaboammar/portfolio-interview"
+      }
+    },
+    {
+      "id": "skill-building",
+      "name": "Build Better Skills",
+      "source": "https://github.com/Songhonglei/build-better-skills",
+      "kind": "skill",
+      "lane": "skill-authoring",
+      "summary": "Procedures to write, test, review and release agent skills.",
+      "benefit": "Procedures to write, test, review and release agent skills.",
+      "signals": [
+        "task:skills",
+        "task:plugin",
+        "task:testing"
+      ],
+      "tags": [
+        "skills",
+        "author",
+        "evals"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/Songhonglei/build-better-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "Songhonglei/build-better-skills"
+      }
+    },
+    {
+      "id": "stark-skills",
+      "name": "Stark Agent Skills",
+      "source": "https://github.com/stark-ai-de/agent-skills",
+      "kind": "skill",
+      "lane": "workflow",
+      "summary": "Operator workflows for codebase maintenance across multiple coding agents.",
+      "benefit": "Operator workflows for codebase maintenance across multiple coding agents.",
+      "signals": [
+        "task:review",
+        "task:quality",
+        "task:architecture"
+      ],
+      "tags": [
+        "agents",
+        "workflows",
+        "maintenance"
+      ],
+      "status": "reviewed",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/stark-ai-de/agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "stark-ai-de/agent-skills"
+      }
+    },
+    {
+      "id": "vercel-agent-skills",
+      "name": "Vercel Agent Skills",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "kind": "skill",
+      "lane": "frontend-quality",
+      "summary": "React and Next.",
+      "benefit": "React and Next.js-focused coding practices and web design review workflows.",
+      "signals": [
+        "framework:nextjs",
+        "framework:react",
+        "task:frontend"
+      ],
+      "tags": [
+        "react",
+        "nextjs",
+        "frontend"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "vercel-labs/agent-skills"
+      }
+    },
+    {
+      "id": "find-skills",
+      "name": "Vercel Find Skills",
+      "source": "https://github.com/vercel-labs/skills",
+      "kind": "skill",
+      "lane": "discovery",
+      "summary": "General ecosystem search for agent skills when KARMA catalog lacks a suitable match.",
+      "benefit": "General ecosystem search for agent skills when KARMA catalog lacks a suitable match.",
+      "signals": [
+        "task:skills",
+        "task:plugin",
+        "task:discovery"
+      ],
+      "tags": [
+        "skill",
+        "discovery",
+        "search"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/vercel-labs/skills#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "vercel-labs/skills",
+        "skill": "find-skills"
+      }
+    },
+    {
+      "id": "motion-hyperframes",
+      "name": "HyperFrames",
+      "source": "https://github.com/heygen-com/hyperframes",
+      "kind": "skill",
+      "lane": "motion-runtime",
+      "summary": "Video rendering engine and reusable motion production components; not itself proof of finished video quality.",
+      "benefit": "Video rendering engine and reusable motion production components; not itself proof of finished video quality.",
+      "signals": [
+        "task:motion",
+        "task:video",
+        "language:typescript"
+      ],
+      "tags": [
+        "hyperframes",
+        "animation",
+        "render"
+      ],
+      "status": "reviewed",
+      "provenance": "ecosystem-docs",
+      "evidence": "https://github.com/heygen-com/hyperframes#readme",
+      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "install": {
+        "method": "skills",
+        "repo": "heygen-com/hyperframes"
+      }
+    },
+    {
+      "id": "security-audit",
+      "name": "Security Audit Skill",
+      "source": "https://github.com/teng-lin/security-audit-skill",
+      "kind": "skill",
+      "lane": "security",
+      "summary": "Multi-phase code security auditing workflow.",
+      "benefit": "Multi-phase code security auditing workflow.",
+      "signals": [
+        "task:security",
+        "task:review"
+      ],
+      "tags": [
+        "security",
+        "audit"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/teng-lin/security-audit-skill#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "teng-lin/security-audit-skill"
+      }
+    },
+    {
+      "id": "oss-maintainer",
+      "name": "OSS Maintainer",
+      "source": "https://github.com/Git-on-my-level/oss-maintainer",
+      "kind": "skill",
+      "lane": "maintenance",
+      "summary": "Review and triage recurring open-source maintenance work.",
+      "benefit": "Review and triage recurring open-source maintenance work.",
+      "signals": [
+        "task:ci",
+        "task:review"
+      ],
+      "tags": [
+        "oss",
+        "maintenance"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/Git-on-my-level/oss-maintainer#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "Git-on-my-level/oss-maintainer"
+      }
+    },
+    {
+      "id": "review-super",
+      "name": "SuperReview",
+      "source": "https://github.com/OmniTensorLabs/SuperReview",
+      "kind": "skill",
+      "lane": "review",
+      "summary": "Evidence-oriented code review workflows.",
+      "benefit": "Evidence-oriented code review workflows.",
+      "signals": [
+        "task:review",
+        "task:quality"
+      ],
+      "tags": [
+        "code",
+        "review"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/OmniTensorLabs/SuperReview#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "OmniTensorLabs/SuperReview"
+      }
+    },
+    {
+      "id": "quality-gate",
+      "name": "Code Quality Gate",
+      "source": "https://github.com/smixs/code-quality",
+      "kind": "skill",
+      "lane": "testing",
+      "summary": "Local code quality gates and linting workflow.",
+      "benefit": "Local code quality gates and linting workflow.",
+      "signals": [
+        "task:quality",
+        "task:testing"
+      ],
+      "tags": [
+        "quality",
+        "lint"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/smixs/code-quality#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "smixs/code-quality"
+      }
+    },
+    {
+      "id": "responsive-craft",
+      "name": "Responsive Craft",
+      "source": "https://github.com/kylezantos/responsive-craft",
+      "kind": "skill",
+      "lane": "frontend-quality",
+      "summary": "Responsive interface review for in-between viewport sizes.",
+      "benefit": "Responsive interface review for in-between viewport sizes.",
+      "signals": [
+        "task:frontend",
+        "task:design"
+      ],
+      "tags": [
+        "responsive",
+        "ui"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/kylezantos/responsive-craft#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "kylezantos/responsive-craft"
+      }
+    },
+    {
+      "id": "agent-browser",
+      "name": "BrowserSkill",
+      "source": "https://github.com/Tencent/BrowserSkill",
+      "kind": "skill",
+      "lane": "browser",
+      "summary": "Use existing logged-in browsers for test and inspection tasks with appropriate permissions.",
+      "benefit": "Use existing logged-in browsers for test and inspection tasks with appropriate permissions.",
+      "signals": [
+        "task:browser",
+        "task:qa",
+        "task:frontend"
+      ],
+      "tags": [
+        "browser",
+        "automation"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/Tencent/BrowserSkill#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "Tencent/BrowserSkill"
+      }
+    },
+    {
+      "id": "jev-router",
+      "name": "Jev Skill Router",
+      "source": "https://github.com/himomohi/jev-skill-router",
+      "kind": "skill",
+      "lane": "discovery",
+      "summary": "Route large skill catalogs without loading all skill instructions into context.",
+      "benefit": "Route large skill catalogs without loading all skill instructions into context.",
+      "signals": [
+        "task:skills",
+        "task:discovery"
+      ],
+      "tags": [
+        "skills",
+        "routing"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/himomohi/jev-skill-router#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "himomohi/jev-skill-router"
+      }
+    },
+    {
+      "id": "design-system",
+      "name": "Agent Native Design System",
+      "source": "https://github.com/fracazo/design-system",
+      "kind": "skill",
+      "lane": "design-system",
+      "summary": "Keep reusable UI decisions and tokens machine-readable for agents.",
+      "benefit": "Keep reusable UI decisions and tokens machine-readable for agents.",
+      "signals": [
+        "task:frontend",
+        "task:design"
+      ],
+      "tags": [
+        "design",
+        "tokens"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/fracazo/design-system#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "fracazo/design-system"
+      }
+    },
+    {
+      "id": "spec-evidence",
+      "name": "Aegis",
+      "source": "https://github.com/GanyuanRan/Aegis",
+      "kind": "skill",
+      "lane": "architecture",
+      "summary": "Compare architectural baseline and evidence for drift.",
+      "benefit": "Compare architectural baseline and evidence for drift.",
+      "signals": [
+        "task:architecture",
+        "task:quality"
+      ],
+      "tags": [
+        "architecture",
+        "evidence"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/GanyuanRan/Aegis#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "GanyuanRan/Aegis"
+      }
+    },
+    {
+      "id": "scientific-openresearch",
+      "name": "OpenResearch",
+      "source": "https://github.com/alphaXiv/OpenResearch",
+      "kind": "skill",
+      "lane": "research",
+      "summary": "Research tooling inside coding agent workflows.",
+      "benefit": "Research tooling inside coding agent workflows.",
+      "signals": [
+        "task:research",
+        "task:llm"
+      ],
+      "tags": [
+        "research",
+        "scientific"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/alphaXiv/OpenResearch#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "alphaXiv/OpenResearch"
+      }
+    },
+    {
+      "id": "mcp-scenarios",
+      "name": "ScenarioSim MCP",
+      "source": "https://github.com/inity13/scenariosim-mcp",
+      "kind": "plugin",
+      "lane": "simulation",
+      "summary": "Scenario simulations for project decision evaluation; setup and data handling need review.",
+      "benefit": "Scenario simulations for project decision evaluation; setup and data handling need review.",
+      "signals": [
+        "task:statistics",
+        "task:research"
+      ],
+      "tags": [
+        "simulation",
+        "mcp"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/inity13/scenariosim-mcp#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "inity13/scenariosim-mcp"
+      }
+    },
+    {
+      "id": "frontend-design-polish",
+      "name": "Hallmark Design",
+      "source": "https://github.com/Nutlope/hallmark",
+      "kind": "skill",
+      "lane": "frontend-quality",
+      "summary": "Review visual conventions and reduce generic interface patterns.",
+      "benefit": "Review visual conventions and reduce generic interface patterns.",
+      "signals": [
+        "task:frontend",
+        "task:design"
+      ],
+      "tags": [
+        "frontend",
+        "polish"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/Nutlope/hallmark#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "Nutlope/hallmark"
+      }
+    },
+    {
+      "id": "trufflehog",
+      "name": "TruffleHog",
+      "source": "https://github.com/trufflesecurity/trufflehog",
+      "kind": "tool",
+      "lane": "security-scan",
+      "summary": "Secret discovery and exposed credential analysis.",
+      "benefit": "Secret discovery and exposed credential analysis.",
+      "signals": [
+        "task:security",
+        "task:ci"
+      ],
+      "tags": [
+        "secrets",
+        "scan"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/trufflesecurity/trufflehog#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "trufflesecurity/trufflehog"
+      }
+    },
+    {
+      "id": "skills-manager",
+      "name": "Skills Manager",
+      "source": "https://github.com/xingkongliang/skills-manager",
+      "kind": "tool",
+      "lane": "discovery",
+      "summary": "Manage agent skill inventories across coding clients.",
+      "benefit": "Manage agent skill inventories across coding clients.",
+      "signals": [
+        "task:skills",
+        "task:plugin"
+      ],
+      "tags": [
+        "skills",
+        "management"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/xingkongliang/skills-manager#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "xingkongliang/skills-manager"
+      }
+    },
+    {
+      "id": "skillware",
+      "name": "Skillware",
+      "source": "https://github.com/ARPAHLS/skillware",
+      "kind": "tool",
+      "lane": "skill-authoring",
+      "summary": "Framework for modular programmatic skills.",
+      "benefit": "Framework for modular programmatic skills.",
+      "signals": [
+        "task:skills",
+        "task:architecture"
+      ],
+      "tags": [
+        "skills",
+        "framework"
+      ],
+      "status": "candidate",
+      "provenance": "user-stars",
+      "evidence": "https://github.com/ARPAHLS/skillware#readme",
+      "review_note": "Starred or surfaced; installation path and claims still need review.",
+      "install": {
+        "method": "skills",
+        "repo": "ARPAHLS/skillware"
+      }
+    }
+  ]
+}

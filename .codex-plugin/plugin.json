@@ -1,0 +1,12 @@
+{
+  "name": "find-karma",
+  "version": "0.1.0",
+  "description": "Project-aware, offline-first agent skill discovery without auto-installs",
+  "author": {
+    "name": "Mamdouh Aboammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "skills": [
+    "skills/find-karma/SKILL.md"
+  ]
+}

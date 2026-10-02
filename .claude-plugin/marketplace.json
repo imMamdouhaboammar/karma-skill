@@ -1,0 +1,11 @@
+{
+  "name": "karma-marketplace",
+  "owner": {"name": "Mamdouh Aboammar"},
+  "plugins": [
+    {
+      "name": "find-karma",
+      "source": "./",
+      "description": "Project-aware, approval-first agent skill discovery"
+    }
+  ]
+}

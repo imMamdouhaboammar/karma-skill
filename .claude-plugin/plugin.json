@@ -1,0 +1,6 @@
+{
+  "name": "find-karma",
+  "version": "0.1.0",
+  "description": "FIND KARMA contextual skill and plugin discovery, no automatic installs",
+  "author": {"name": "Mamdouh Aboammar"}
+}

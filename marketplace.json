@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/claude-plugin-manifest.json",
+  "name": "find-karma",
+  "displayName": "FIND KARMA ☯",
+  "version": "0.1.0",
+  "description": "Project-aware, offline-first agent skill discovery without auto-installs",
+  "author": {
+    "name": "Mamdouh Aboammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "homepage": "https://skills.sh/find-karma",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imMamdouhaboammar/karma-skill.git"
+  },
+  "license": "MIT",
+  "categories": [
+    "automation",
+    "developer-tools",
+    "agent-tools"
+  ],
+  "compatibility": {
+    "claudeCode": ">=1.0.0",
+    "claudeDesktop": ">=1.0.0",
+    "cursor": ">=0.40.0",
+    "codex": ">=0.1.0",
+    "opencode": ">=1.0.0",
+    "antigravity": ">=1.0.0",
+    "windsurf": ">=1.0.0"
+  },
+  "entrypoint": "skills/find-karma/SKILL.md",
+  "bin": {
+    "karma": "./bin/cli.js",
+    "find-karma": "./bin/cli.js"
+  }
+}

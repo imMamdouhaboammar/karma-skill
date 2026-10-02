@@ -1,0 +1,28 @@
+---
+description: Discover curated AI coding agent skills and plugins matching the active workspace
+globs: *
+alwaysApply: false
+---
+
+# FIND KARMA ☯ | Cursor Agent Adapter
+
+When the user asks for:
+- `FIND KARMA` or `FIND KARMA ☯`
+- "find karma"
+- "what skills should I use for this project?"
+- "recommend agent skills"
+- "find plugins for this repo"
+
+## Instructions
+
+1. Run the local KARMA discovery engine in read-only JSON mode:
+   ```bash
+   ./bin/karma find --project . --goal "<USER_GOAL>" --agent cursor --json
+   ```
+   Or using Bun/Node:
+   ```bash
+   bun run karma find --project . --goal "<USER_GOAL>" --agent cursor --json
+   ```
+
+2. Present only the 2-5 highest-scoring recommendations with clear "why now" reasoning and source links.
+3. Never automatically install third-party code. Always display the preview and request explicit user confirmation before running any installation commands.

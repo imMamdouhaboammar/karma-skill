@@ -1,0 +1,56 @@
+{
+  "name": "find-karma",
+  "version": "0.1.0",
+  "description": "Offline-first contextual discovery of curated AI coding skills and plugins",
+  "type": "module",
+  "main": "bin/cli.js",
+  "bin": {
+    "karma": "./bin/cli.js",
+    "find-karma": "./bin/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imMamdouhaboammar/karma-skill.git"
+  },
+  "files": [
+    "bin",
+    "catalog",
+    "skills",
+    "src",
+    "SKILL.md",
+    "marketplace.json",
+    ".skills.json",
+    "install.sh",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "bun bin/cli.js",
+    "test": "bun test && PYTHONPATH=src python3 -m unittest discover -s tests -v",
+    "validate": "PYTHONPATH=src python3 -m karma validate",
+    "build": "python3 scripts/build_skill.py",
+    "doctor": "bun bin/cli.js doctor"
+  },
+  "keywords": [
+    "agent-skill",
+    "skills.sh",
+    "claude-code",
+    "cursor",
+    "codex",
+    "gemini",
+    "gemini-cli",
+    "antigravity",
+    "windsurf",
+    "opencode",
+    "bun",
+    "offline-first",
+    "karma",
+    "developer-tools"
+  ],
+  "author": "Mamdouh Aboammar <https://github.com/imMamdouhaboammar>",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.0.0",
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "find-karma"
+version = "0.1.0"
+description = "Offline-first contextual discovery of curated AI coding skills and plugins"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Mamdouh Aboammar"}]
+license = {text = "MIT"}
+keywords = ["agent-skills", "coding-agents", "cli", "curation"]
+
+[project.scripts]
+karma = "karma.runtime:main"
+find-karma = "karma.runtime:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+karma = ["catalog.json", "portable/SKILL.md", "portable/scripts/*.py", "portable/assets/*.json", "portable/references/*.md", "portable/agents/*.md", "portable/examples/*.md"]
+

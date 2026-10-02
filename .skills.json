@@ -1,0 +1,23 @@
+{
+  "$schema": "https://skills.sh/schema.json",
+  "name": "find-karma",
+  "version": "0.1.0",
+  "description": "Offline-first contextual discovery of curated AI coding skills and plugins",
+  "repository": "https://github.com/imMamdouhaboammar/karma-skill",
+  "author": "Mamdouh Aboammar",
+  "license": "MIT",
+  "skill": "skills/find-karma/SKILL.md",
+  "tags": [
+    "agent-skill",
+    "skills-sh",
+    "claude-code",
+    "cursor",
+    "codex",
+    "gemini",
+    "antigravity",
+    "windsurf",
+    "automation",
+    "developer-tools",
+    "offline-first"
+  ]
+}
