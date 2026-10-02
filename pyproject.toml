@@ -8,9 +8,38 @@ version = "0.1.0"
 description = "Offline-first contextual discovery of curated AI coding skills and plugins"
 readme = "README.md"
 requires-python = ">=3.10"
-authors = [{name = "Mamdouh Aboammar"}]
+authors = [{name = "Mamdouh Aboammar", email = "mamdouhfces1997@gmail.com"}]
 license = {text = "MIT"}
-keywords = ["agent-skills", "coding-agents", "cli", "curation"]
+keywords = [
+    "agent-skills",
+    "coding-agents",
+    "cli",
+    "curation",
+    "claude-code",
+    "cursor",
+    "codex",
+    "gemini-cli",
+    "antigravity",
+    "windsurf",
+    "offline-first"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.urls]
+Homepage = "https://github.com/imMamdouhaboammar/karma-skill"
+Repository = "https://github.com/imMamdouhaboammar/karma-skill.git"
+Issues = "https://github.com/imMamdouhaboammar/karma-skill/issues"
+Documentation = "https://github.com/imMamdouhaboammar/karma-skill#readme"
 
 [project.scripts]
 karma = "karma.runtime:main"
@@ -23,5 +52,12 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-karma = ["catalog.json", "portable/SKILL.md", "portable/scripts/*.py", "portable/assets/*.json", "portable/references/*.md", "portable/agents/*.md", "portable/examples/*.md"]
-
+karma = [
+    "catalog.json",
+    "portable/SKILL.md",
+    "portable/scripts/*.py",
+    "portable/assets/*.json",
+    "portable/references/*.md",
+    "portable/agents/*.md",
+    "portable/examples/*.md",
+]

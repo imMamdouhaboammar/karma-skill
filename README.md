@@ -6,6 +6,7 @@
 **Fit Over Fame • Zero Telemetry • Human Approval First • Multi-Agent Ready**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/find-karma.svg?style=flat-square&color=blue&logo=pypi&logoColor=white)](https://pypi.org/project/find-karma/)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![Bun](https://img.shields.io/badge/Runtime-Bun%20%3E%3D1.0-FBF0DF?style=flat-square&logo=bun&logoColor=black)](https://bun.sh)
 [![Skills.sh](https://img.shields.io/badge/Skills.sh-Compatible-000000?style=flat-square&logo=vercel&logoColor=white)](https://skills.sh)
@@ -44,7 +45,19 @@ KARMA is built with a strict **offline-first and user-sovereignty** philosophy:
 
 ## 🚀 Quickstart
 
-### 1. Instant Zero-Install (Bun / npx)
+### 1. Python Package via pip (PyPI)
+
+```bash
+pip install find-karma
+
+# Doctor check
+karma doctor
+
+# Discover skills for your active project
+karma find --project . --goal "Fix React UI quality" --agent codex
+```
+
+### 2. Instant Zero-Install (Bun / npx)
 
 ```bash
 # Doctor check
@@ -56,7 +69,7 @@ npx find-karma doctor
 bunx find-karma find --project . --goal "Fix React UI quality" --agent claude-code
 ```
 
-### 2. Universal Multi-Agent One-Liner
+### 3. Universal Multi-Agent One-Liner
 
 Install KARMA into all detected coding agents on your machine in one command:
 
@@ -72,7 +85,7 @@ Or install directly into a specific project workspace:
 ./install.sh --project /path/to/your/project
 ```
 
-### 3. Local Python Execution
+### 4. Local Python Execution
 
 ```bash
 ./bin/karma doctor

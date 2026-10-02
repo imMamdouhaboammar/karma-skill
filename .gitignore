@@ -9,3 +9,5 @@ build/
 .DS_Store
 node_modules/
 bun.lockb
+uv.lock
+
