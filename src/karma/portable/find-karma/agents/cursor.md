@@ -13,4 +13,4 @@
    python3 "${SKILL_DIR:-.cursor/skills/find-karma}/scripts/karma.py" find --project "$PWD" --goal "<USER_GOAL>" --agent cursor --json
    ```
 2. Present only the strongest recommendations with why-now evidence and manual preview commands.
-3. Require user consent before modifying `.cursor/rules` or running `npx skills add`.
+3. Require user consent before modifying `.cursor/rules` or running `karma install <id> --agent cursor --execute --yes`.

@@ -13,7 +13,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - run: python scripts/seed_catalog.py
       - run: python scripts/build_skill.py
+      - name: Reject stale canonical and portable catalogs
+        run: git diff --exit-code -- catalog/curated.json src/karma/catalog.json skills/find-karma/assets/catalog.json skills/find-karma/scripts/karma.py src/karma/portable
       - run: PYTHONPATH=src python -m unittest discover -s tests -v
       - run: PYTHONPATH=src python -m karma validate
       - run: python skills/find-karma/scripts/karma.py find --project examples/python-api --json

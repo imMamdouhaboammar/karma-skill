@@ -35,7 +35,7 @@ The new **KARMA MCP advisor** is intentionally limited to two read-only tools:
 1. `recommend_skills`: describe the task and optionally send non-sensitive stack tags; get up to five matching reviewed entries, reasons, sources and installation guides.
 2. `get_skill_guide`: request the guide for one reviewed entry by ID.
 
-**That's the full MCP contract.** It does not install, fetch, rank by GitHub stars, read your project's files or execute commands. The agent still needs your approval before acting on any returned installation command. The shipped catalog currently has 45 reviewed entries and 15 candidates that MCP never recommends. `reviewed` means documentation or structure was inspected, not a guarantee of security or performance.
+**That's the full MCP contract.** It does not install, fetch, rank by GitHub stars, read your project's files or execute commands. The agent still needs your approval before any installation. The 2026-10-23 catalog migration retains **25 revision-bound reviewed entries** and **36 candidates**. Records lacking evidence for the exact inspected commit were downgraded, not silently grandfathered in. `reviewed` identifies an inspected skill entrypoint at an immutable Git commit, not a guarantee of safety or performance.
 
 ### Connect an MCP client (new)
 
@@ -237,7 +237,7 @@ flowchart TD
     Guides --> User["Agent presents choices to user"]
 ```
 
-Only the standalone CLI offers a separate, explicitly approved `install --execute --yes` command. There is no corresponding MCP installation tool.
+Only the standalone CLI offers a separate, explicitly approved `install --execute --yes` command. There is no MCP installation tool. All ordinary catalog, recommendation, guide, and MCP calls remain offline. A separate maintenance command, `python3 scripts/check_reviewed_drift.py --online`, explicitly contacts upstream Git repositories and reports drift without changing review status.
 
 ---
 
@@ -254,7 +254,10 @@ Only the standalone CLI offers a separate, explicitly approved `install --execut
 1. ui-skills (lane: frontend-quality)
    Why: Detected React 19 + TypeScript dependencies in package.json.
    Source: https://github.com/ibelick/ui-skills
-   Installation: npx --yes skills add ibelick/ui-skills -a codex -y
+   Reviewed revision: 55363c305097d4c84487bd5f323d29b3f067bf72
+   Reviewed path: skills/ui-skills-root
+   Installation preview: karma install ui-skills --agent codex
+   Approved installation: karma install ui-skills --agent codex --execute --yes
 ```
 
 ### 2. JSON Mode for Orchestrators & Multi-Agent Swarms
@@ -272,11 +275,11 @@ KARMA strictly adheres to the **Security Best Practices** guidelines:
 1. **Read-Mostly Metadata Scan**:
    KARMA scans project manifests (e.g. `package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`) and filenames. It **never reads credentials, `.env` files, private keys, or source file internals**.
 
-2. **No Unauthenticated Remote Execution**:
-   No code is executed remotely. Running `find` never makes outbound HTTP calls or downloads packages.
+2. **No Background Remote Execution**:
+   Running `find` never makes outbound HTTP calls or downloads packages. The explicitly approved installer fetches a fixed Git revision and copies an inspected skill directory. It does not execute the installed skill or invoke a mutable third-party installer.
 
 3. **Dry-Run by Default**:
-   `karma install` prints a dry-run preview command. It will refuse to invoke external commands unless both `--execute` and `--yes` are explicitly passed.
+   `karma install` previews only. `--execute --yes` is required to fetch the exact recorded commit, verify `HEAD` and the selected `SKILL.md` path, and copy it into an absent host-specific skill directory. Mismatches, missing paths, and symlinks fail closed. Existing installations are not overwritten.
 
 4. **Symlink Boundary Protection**:
    Directory symlinks outside the repository root are ignored during project inspection, and `init-agent` strictly refuses to write through symlinked agent target directories.
@@ -288,7 +291,7 @@ KARMA strictly adheres to the **Security Best Practices** guidelines:
 
 ## 📦 Curated Catalog & Trust
 
-Sources include tested skills and tools from across the ecosystem:
+Sources include reviewed entries and unverified candidates from across the ecosystem:
 - `mattpocock/skills` (TDD, Engineering workflow)
 - `trailofbits/skills` (Security audits, Vulnerability verification)
 - `K-Dense-AI/scientific-agent-skills` (Scientific research, Literature reproduction)
@@ -297,7 +300,19 @@ Sources include tested skills and tools from across the ecosystem:
 - `ibelick/ui-skills` (Modern visual UI & React craft)
 - `cisco-ai-defense/skill-scanner` (Agent skill security scanning)
 
-> **Note**: `reviewed` indicates catalog maintainers verified the structure, license, and repository metadata. It is not an endorsement of unverified third-party HEAD revisions.
+> **Review identity**: Each `reviewed` entry contains a 40-character `reviewed_revision`, `reviewed_path`, `reviewed_at`, and a link to that exact `SKILL.md`. This is entrypoint/documentation-level inspection, not an audit of every included script, referenced dependency, or future upstream commit. `candidate` entries are excluded from trusted recommendations and `karma install`.
+
+The installation route deliberately avoids `owner/repo@ref`, `owner/repo#ref`, and moving GitHub URLs. Those forms may depend on the installed `skills` CLI version and do not independently prove the files copied. The approved Karma installer fetches the full SHA with Git, verifies `HEAD`, then copies the exact reviewed directory. Only the selected skill directory is copied, so a skill relying on sibling directories may need a separately reviewed distribution path. Git must be installed and reachable for approved installs.
+
+```bash
+karma show matt-tdd --agent codex
+karma install matt-tdd --agent codex                  # dry run; no network
+karma install matt-tdd --agent codex --execute --yes  # approved exact-SHA fetch + copy
+python3 scripts/check_reviewed_drift.py               # offline: unknown status, no requests
+python3 scripts/check_reviewed_drift.py --online      # explicit network maintenance check
+```
+
+A changed upstream `HEAD` is reported separately as `upstream_changed`; it never inherits the prior review. Unavailable sources, missing paths, or an offline check are not reported as current. Promoting a new commit requires inspecting its content, updating the source-of-truth seed and review evidence, rebuilding the catalogs, and rerunning verification.
 
 ---
 

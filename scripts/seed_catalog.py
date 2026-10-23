@@ -1,27 +1,79 @@
-"""Explicit, reviewable seed. This is NOT a dump of every starred repository.
+"""Explicit catalog seed. Only dated, revision-specific SKILL.md inspections are reviewed.
 
-Provenance: public GitHub starred listings sampled on 2026-10-02 and repo root/README
-checks for reviewed entries. 'reviewed' means source structure/docs inspected,
-NOT proof of downstream performance or security audit.
+The original 2026-10-02 structure/README inspections are not revision evidence.
+Records without a newly inspected immutable entrypoint remain candidates.
 """
 import json
 from pathlib import Path
 
 items=[]
 
+# Read-only inspections on 2026-10-23: checked the listed SKILL.md entrypoints,
+# their declared purposes and repository layouts in isolated Git checkouts.
+# This is NOT a security audit of scripts, transitive tools or linked resources.
+REVIEWED_REVISIONS = {
+    'mattpocock/skills': '5beb35b040e3de97e54fa9e386d7e42d15c295c2',
+    'ibelick/ui-skills': '55363c305097d4c84487bd5f323d29b3f067bf72',
+    'vercel-labs/agent-skills': '063bee94c3f4df8453406c830b0a7df0f2860278',
+    'anthropics/skills': 'dbd4588f9e1033efb41dad4bef2f7947c8993d44',
+    'obra/superpowers': '2ce8aa15d05bd57213e6f746f953aafb7ded7a8b',
+    'antfu/skills': '8886fe2d385d3644cbb47e46ae9cb1cf09307d3b',
+    'supabase/agent-skills': 'c9be0e931b7930f7d02126d04774d904c381e7d7',
+    'prisma/skills': 'ba3f9d73200bbb62e49733ab93a961fd138a2c18',
+    'imMamdouhaboammar/karma-skill': '175c7ae78a2d4f359e6e741bf8949fe2c35fa4c9',
+}
+REVIEWED_PATHS = {
+    'matt-tdd': 'skills/engineering/tdd',
+    'ui-skills': 'skills/ui-skills-root',
+    'vercel-react-best-practices': 'skills/react-best-practices',
+    'vercel-composition-patterns': 'skills/composition-patterns',
+    'web-design-guidelines': 'skills/web-design-guidelines',
+    'vercel-deploy': 'skills/deploy-to-vercel',
+    'anthropic-webapp-testing': 'skills/webapp-testing',
+    'anthropic-frontend-design': 'skills/frontend-design',
+    'anthropic-doc-coauthoring': 'skills/doc-coauthoring',
+    'anthropic-mcp-builder': 'skills/mcp-builder',
+    'anthropic-pdf': 'skills/pdf',
+    'anthropic-docx': 'skills/docx',
+    'anthropic-xlsx': 'skills/xlsx',
+    'anthropic-skill-creator': 'skills/skill-creator',
+    'superpowers-tdd': 'skills/test-driven-development',
+    'superpowers-git-worktrees': 'skills/using-git-worktrees',
+    'superpowers-systematic-debugging': 'skills/systematic-debugging',
+    'superpowers-brainstorming': 'skills/brainstorming',
+    'antfu-vitest': 'skills/vitest',
+    'antfu-vue': 'skills/vue',
+    'antfu-vite': 'skills/vite',
+    'supabase-postgres': 'skills/supabase-postgres-best-practices',
+    'supabase-fullstack': 'skills/supabase',
+    'prisma-setup': 'prisma-database-setup',
+    'ui-master': 'skills/ui-master',
+}
+REVIEWED_AT = '2026-10-23T13:16:05Z'
+
 def add(id, repo, name, lane, benefit, signals, tags='', *, kind='skill',method='skills',skill=None,hosts=None,status='reviewed',provenance='user-stars',instructions=None):
+    missing_review = status == 'reviewed' and id not in REVIEWED_PATHS
+    if missing_review: status = 'candidate'
     entry={
         'id':id,'name':name, 'source':f'https://github.com/{repo}',
         'kind':kind, 'lane':lane,'summary':benefit.split('.')[0]+'.',
         'benefit':benefit,'signals':signals.split(),
         'tags':tags.lower().split(), 'status':status, 'provenance':provenance,
         'evidence':f'https://github.com/{repo}#readme',
-        'review_note':'Repository structure and/or README inspected. No independent benchmark or security guarantee.' if status=='reviewed' else 'Starred or surfaced; installation path and claims still need review.',
+        'review_note':('Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.' if status=='reviewed'
+                       else 'Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.' if missing_review
+                       else 'Starred or surfaced; installation path and claims still need review.'),
         'install': {'method':method, 'repo':repo}
     }
     if skill: entry['install']['skill']=skill
     if hosts: entry['hosts']=hosts
     if instructions: entry['install']['instructions']=instructions
+    if status == 'reviewed':
+        revision = REVIEWED_REVISIONS[repo]
+        path = REVIEWED_PATHS[id]
+        entry.update(reviewed_revision=revision,reviewed_path=path,reviewed_at=REVIEWED_AT,
+                     evidence=f'https://github.com/{repo}/blob/{revision}/{path}/SKILL.md')
+        entry['install']['skill'] = Path(path).name
     items.append(entry)
 
 add('matt-engineering','mattpocock/skills','Matt Pocock Engineering Skills','engineering','Focused engineering routines for requirement clarification, architecture, TDD and review.','task:planning task:testing task:architecture task:review language:typescript','engineering review tdd typescript')
@@ -37,6 +89,7 @@ add('skill-scanner','cisco-ai-defense/skill-scanner','Cisco Skill Scanner','skil
 add('skillspector','NVIDIA/SkillSpector','NVIDIA SkillSpector','skill-security','Security analysis for agent skill files and prompt-driven risks.','task:skills task:security task:plugin','skill security audit',kind='tool',method='manual',instructions='Use the documented SkillSpector CLI in its README after checking Python/runtime requirements.')
 add('eval-skills','ai-evals-course/evals-skills','AI Evals Skills','evaluation','Plan and implement product-specific AI evaluations and measurable checks.','task:evals task:testing task:llm task:research','evals testing llm')
 add('council','kitze/council','Council','collaboration','Solicit explicit multi-agent viewpoints during demanding planning or design decisions.','task:architecture task:planning task:orchestration','architecture planning secondopinion')
+add('ui-master','imMamdouhaboammar/karma-skill','UI-Master Engineering Suite','frontend-quality','Design engineering agent with a bundled catalog and native UI checks; Rust tools require a separately available engine.','task:frontend task:design task:quality task:browser task:review','ui-master uim contrast accessibility wcag crx anti-slop rig rust extension',kind='skill',skill='ui-master',provenance='curated')
 add('ui-skills','ibelick/ui-skills','UI Skills','frontend-quality','Design engineering skill guidance for visual polish and interface quality.','task:frontend framework:react language:typescript task:design','ui frontend design')
 add('daymade-claude','daymade/claude-code-skills','daymade Claude Skills','workflow','Specialized workflows for repo maintenance, QA, research and visual verification.','task:debugging task:review task:frontend task:qa','claude qa review skills',method='manual',instructions='Inspect the repo skills and plugin manifest, and select the specific skill via README or the skills CLI --list mode.')
 add('portfolio-interview','imMamdouhaboammar/portfolio-interview','Portfolio Interview','frontend-quality','Interactive intake and portfolio implementation guidance.','task:portfolio task:frontend task:design','portfolio design frontend')
@@ -101,5 +154,5 @@ for item in items:
     if item['id']=='daymade-claude':
         item['signals'].remove('task:frontend')
 root=Path(__file__).resolve().parents[1]
-(root/'catalog/curated.json').write_text(json.dumps({'schema_version':1,'updated':'2026-10-02','review_policy':'Docs/structure review, not guaranteed performance; candidates excluded from recommendations.','items':items},indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+(root/'catalog/curated.json').write_text(json.dumps({'schema_version':2,'updated':'2026-10-23','review_policy':'Only named SKILL.md paths inspected at a full immutable Git commit are reviewed. Older mutable inspections are candidates; no general safety guarantee.','items':items},indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
 print(f'Seeded {len(items)} records: {sum(x["status"]=="reviewed" for x in items)} reviewed; {sum(x["status"]=="candidate" for x in items)} candidates')

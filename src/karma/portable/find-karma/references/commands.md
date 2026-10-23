@@ -7,11 +7,13 @@ Run `./bin/karma <command>` inside the source checkout, or `python3 <skill-path>
 - `catalog [--all] [--kind skill|plugin|tool] [--json]`: list reviewed, or pending review too
 - `show ID [--agent NAME] [--json]`: source and benefits for one record
 - `install ID --agent NAME`: print exact command, **do not run it**
-- `install ID --agent NAME --execute --yes`: explicit opt-in to execute the `npx skills add` installer. No shell interpolation is used. Not supported for native plugin marketplaces/manual tools
+- `install ID --agent NAME --execute --yes`: explicit opt-in to Git-fetch the exact reviewed SHA, verify `HEAD` and selected path, then copy the selected directory into the current project's host-specific skills path. Requires Git; no mutable `skills` CLI ref, shell interpolation, or overwrite. Not supported for unreviewed/manual records
 - `init-agent [--project ROOT] [--agent NAME] [--dry-run] [--force]`: copy this portable skill into an agent-specific workspace path
 - `sync-stars [--user USER] [--project ROOT] [--max-pages N] [--output PATH] [--json]`: GitHub REST fetch of public starred repos, writes only UNREVIEWED candidates to JSON; never edits the curated list
 - `doctor [--json]`: environment and package check
-- `validate [--json]`: verify bundled catalog schema and install source safety
+- `validate [--json]`: verify bundled schema v2, reviewed commit/path/evidence/time, and install source safety
+
+Separate source-checkout maintenance command: `python3 scripts/check_reviewed_drift.py [--online]`. Offline by default; an online check reports current Git HEAD and whether the recorded skill path still exists, without revising any review status.
 
 The `find` command reads filenames and bounded `package.json` metadata. It does not send source files to a model or external service.
 

@@ -23,7 +23,8 @@ python3 "$SKILL_DIR/scripts/karma.py" find \
    - **Lane**: frontend-quality
    - **Why now**: Detected React 19 + TypeScript dependencies in `package.json` with matching goal for UI component quality.
    - **Source**: https://github.com/ibelick/ui-skills
-   - **Installation Preview**: `npx --yes skills add ibelick/ui-skills -a codex -y`
+   - **Reviewed**: `55363c305097d4c84487bd5f323d29b3f067bf72`, `skills/ui-skills-root`
+   - **Installation Preview**: `karma install ui-skills --agent codex` (dry run)
 
 Would you like me to install any of these skills? Please specify the ones you approve.
 ```

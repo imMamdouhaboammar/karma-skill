@@ -17,19 +17,7 @@ python3 "$SKILL_DIR/scripts/karma.py" find \
 ## Expected Response Format
 
 ```markdown
-### ☯ Recommended Security Skills
+### ☯ Security Discovery Guardrail
 
-1. **trailofbits-security** (`trailofbits/skills`)
-   - **Lane**: security
-   - **Why now**: Detected Python codebase requiring security review and vulnerability auditing.
-   - **Source**: https://github.com/trailofbits/skills
-   - **Installation Preview**: `/plugin marketplace add trailofbits/skills; /plugin menu; select only required plugin.`
-
-2. **dokion** (`imMamdouhaboammar/dokion`)
-   - **Lane**: supply-chain
-   - **Why now**: Codebase verification and supply-chain integrity checks.
-   - **Source**: https://github.com/imMamdouhaboammar/dokion
-   - **Installation Preview**: `npx --yes skills add imMamdouhaboammar/dokion -a claude-code -y`
-
-Would you like to proceed with installing any of these?
+Only show entries actually returned as `reviewed` by the live catalog. The earlier `trailofbits-security` and `dokion` manual-install records have no revision-verified installation route and are now **candidates**, not installable recommendations. Never synthesize a mutable installation command to fill a security shortlist. If no purpose-matched reviewed security entry exists, say so and recommend a new revision-specific review.
 ```
