@@ -360,7 +360,8 @@ def _install_reviewed(item: dict[str,Any], agent: str, project: Path) -> Path:
 
 
 def find(entries: list[dict[str, Any]], project_signals: set[str], goal: str='',
-         limit: int=5, agent: str='codex') -> list[dict[str, Any]]:
+         limit: int=5, agent: str='codex', *,
+         require_goal_evidence: bool=False) -> list[dict[str, Any]]:
     """Deterministic explainable matching, never based on star counts."""
     if agent not in AGENTS: raise ValueError(f'Unknown agent: {agent}')
     desired = _goal_signals(goal)
@@ -377,8 +378,9 @@ def find(entries: list[dict[str, Any]], project_signals: set[str], goal: str='',
         tag_hits = set(item.get('tags',[])) & query_tokens
         score = sum(GOAL_WEIGHTS.get(s,9) for s in goal_hits) + 3*len(project_hits) + 2*len(tag_hits)
         if 'task:frontend' in goal_hits and item['lane']=='frontend-quality': score += 5
-        # If user supplies a specific goal, a non-matching project-only item is noise.
-        if goal.strip() and desired and not (goal_hits or tag_hits): continue
+        # MCP needs this stricter gate even for keyword-only goals without known
+        # signal tags. Filter before ranking, lane/source deduplication and limit.
+        if goal.strip() and (desired or require_goal_evidence) and not (goal_hits or tag_hits): continue
         if score < (7 if goal.strip() and desired else 3): continue
         why=[]
         if goal_hits: why.append('Goal: '+', '.join(sorted(goal_hits)))
