@@ -29,6 +29,17 @@ UI-Master (`@ui-master`) is an autonomous, high-discipline design engineering ag
    - Remote HTTP Server: `https://www.ui-skills.com/mcp` (`list_skills`, `get_skill`).
    - Stdio Native Server: `uim mcp` (sub-millisecond JSON-RPC 2.0 Rig tool execution).
 
+The `uim` launcher uses a compiled engine when available. Otherwise it uses
+Python for `contrast` and the limited `audit` fallback, and offline Cargo for
+native-only commands (`crx`, `skills`, `mcp`, `rig`, `get-skill`, `trace`).
+Build the Rust engine explicitly from the full checkout when dependencies are
+not cached: `cargo build --locked --manifest-path crates/ui-master-engine/Cargo.toml`.
+Portable installs without native engine source require a separately installed
+`uim` binary for those commands. `UIM_CARGO_RUN=1` or `true` also routes bridge
+commands through Cargo; unset, `auto`, `0`, and `false` retain normal dispatch.
+The Python `audit` bridge currently checks only `h-screen`, so its clean result
+does not certify other accessibility or anti-slop rules (see Issue #5).
+
 ---
 
 ## Universal Agent Triggers & Slash Commands

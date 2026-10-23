@@ -1,21 +1,104 @@
 #!/usr/bin/env bash
 set -e
 
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+if [[ "$SCRIPT_PATH" != */* && ! -e "$SCRIPT_PATH" ]]; then
+  SCRIPT_PATH="$(type -P "$SCRIPT_PATH")"
+fi
+LINK_COUNT=0
+while [[ -L "$SCRIPT_PATH" ]]; do
+  ((LINK_COUNT += 1))
+  if (( LINK_COUNT > 20 )); then
+    echo "uim: too many launcher symlink redirects." >&2
+    exit 69
+  fi
+  LINK_DIR="$(cd -P "$(dirname "$SCRIPT_PATH")" && pwd)"
+  LINK_TARGET="$(readlink "$SCRIPT_PATH")"
+  if [[ "$LINK_TARGET" == /* ]]; then
+    SCRIPT_PATH="$LINK_TARGET"
+  else
+    SCRIPT_PATH="$LINK_DIR/$LINK_TARGET"
+  fi
+done
+DIR="$(cd -P "$(dirname "$SCRIPT_PATH")" && pwd)"
 ROOT="$(cd "$DIR/../../.." && pwd)"
+MANIFEST="$ROOT/crates/ui-master-engine/Cargo.toml"
+COMMAND="${1:-}"
 
-# 1. Prefer compiled local/global binary
-if command -v uim >/dev/null 2>&1; then
-  exec uim "$@"
-elif [ -f "$HOME/.bun/bin/uim" ]; then
+case "${UIM_CARGO_RUN:-auto}" in
+  auto|0|false) FORCE_CARGO=0 ;;
+  1|true) FORCE_CARGO=1 ;;
+  *)
+    echo "uim: invalid UIM_CARGO_RUN value; use auto, 0, false, 1, or true." >&2
+    exit 2
+    ;;
+esac
+
+# PATH can contain this script or the package's Node shim, which calls back
+# into this script when no compiled engine is present.
+is_own_launcher() {
+  [[ "$1" -ef "${BASH_SOURCE[0]}" ]] || \
+    [[ -f "$ROOT/bin/ui-master.js" && "$1" -ef "$ROOT/bin/ui-master.js" ]]
+}
+
+while IFS= read -r EXTERNAL; do
+  if [[ -n "$EXTERNAL" ]] && ! is_own_launcher "$EXTERNAL"; then
+    exec "$EXTERNAL" "$@"
+  fi
+done < <(type -aP uim 2>/dev/null || true)
+if [[ -n "${HOME:-}" && -x "$HOME/.bun/bin/uim" ]] && ! is_own_launcher "$HOME/.bun/bin/uim"; then
   exec "$HOME/.bun/bin/uim" "$@"
-elif [ -f "$ROOT/crates/ui-master-engine/target/release/ui-master-engine" ]; then
-  exec "$ROOT/crates/ui-master-engine/target/release/ui-master-engine" "$@"
-elif [ -f "$ROOT/crates/ui-master-engine/target/debug/ui-master-engine" ]; then
-  exec "$ROOT/crates/ui-master-engine/target/debug/ui-master-engine" "$@"
-elif [ -n "$UIM_CARGO_RUN" ] && command -v cargo >/dev/null 2>&1 && [ -f "$ROOT/crates/ui-master-engine/Cargo.toml" ]; then
-  exec cargo run --quiet --manifest-path "$ROOT/crates/ui-master-engine/Cargo.toml" -- "$@"
-else
-  # 2. Instant offline Python bridge (<20ms)
+fi
+for ENGINE in "$ROOT/crates/ui-master-engine/target/release/ui-master-engine" \
+              "$ROOT/crates/ui-master-engine/target/debug/ui-master-engine"; do
+  if [[ -x "$ENGINE" ]]; then
+    exec "$ENGINE" "$@"
+  fi
+done
+
+case "$COMMAND" in
+  ''|help|-h|--help)
+    printf '%s\n' \
+      'Usage: uim <command> [arguments]' \
+      '  contrast <fg> <bg> [--json]  Color contrast (Python or Rust)' \
+      '  audit <path> [--json]       UI audit (limited Python bridge or Rust)' \
+      '  crx <dir> [--json]         Chrome extension audit (Rust)' \
+      '  skills <query> [--json]    Local skills search (Rust)' \
+      '  mcp                        JSON-RPC stdio server (Rust)' \
+      '  rig <list|call>            Native tool interface (Rust)' \
+      '  get-skill <slug>           Read locally cached skill (Rust)' \
+      '  trace <init|step|show>     Local trace ledger (Rust)'
+    exit 0
+    ;;
+esac
+
+case "$COMMAND" in
+  contrast|audit) BRIDGE_SUPPORTED=1 ;;
+  crx|skills|mcp|rig|get-skill|trace) BRIDGE_SUPPORTED=0 ;;
+  *)
+    echo "uim: unknown command '$COMMAND'. Available: contrast, audit, crx, skills, mcp, rig, get-skill, trace." >&2
+    exit 2
+    ;;
+esac
+
+if [[ "$BRIDGE_SUPPORTED" -eq 1 && "$FORCE_CARGO" -eq 0 ]]; then
+  if [[ ! -f "$DIR/bridge.py" ]] || ! command -v python3 >/dev/null 2>&1; then
+    echo "uim: '$COMMAND' requires the Python bridge, but bridge.py or python3 is unavailable." >&2
+    exit 69
+  fi
   exec python3 "$DIR/bridge.py" "$@"
 fi
+
+if [[ ! -f "$MANIFEST" ]]; then
+  echo "uim: '$COMMAND' requires the native Rust engine; its Cargo manifest is not bundled here." >&2
+  echo "Install a compiled uim executable on PATH, or build the engine from a full source checkout with Cargo." >&2
+  exit 69
+fi
+if ! command -v cargo >/dev/null 2>&1; then
+  echo "uim: '$COMMAND' requires the native Rust engine, but Cargo is not available on PATH." >&2
+  echo "Install Rust/Cargo and build with: cargo build --locked --manifest-path '$MANIFEST'" >&2
+  exit 69
+fi
+
+# Cargo must not download dependencies implicitly during an ordinary CLI/MCP call.
+exec cargo run --offline --locked --quiet --manifest-path "$MANIFEST" -- "$@"

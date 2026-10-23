@@ -276,6 +276,7 @@ Deterministic Quality Gates:
   skills <query> [--json]               Sub-millisecond BM25 keyword search across 421 design skills
   get-skill <slug>                      Fetch cached skill markdown directly from local storage
   trace <init|step|show> [args]         Manage multi-agent observability traces and circuit breaker state
+  mcp                                   Start JSON-RPC MCP server over stdio
 
 Examples:
   ui-master-engine rig list
