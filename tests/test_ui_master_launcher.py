@@ -150,10 +150,13 @@ class UIMLauncherTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)['ratio'], 21.0)
 
-    def test_audit_bridge_stays_available_without_native_engine(self):
-        result = self.run_uim('audit', str(REPO / 'examples/react-app'), '--json')
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn('violations_count', json.loads(result.stdout))
+    def test_audit_without_native_must_not_report_false_clean(self):
+        target = self.root / 'missing-focus.tsx'
+        target.write_text('<button className="outline-none">Continue</button>\n')
+        result = self.run_uim('audit', str(target), '--json')
+        self.assertEqual(result.returncode, 69, (result.stdout, result.stderr))
+        self.assertNotIn('"violations_count": 0', result.stdout)
+        self.assertIn('native Rust engine', result.stderr)
 
     def test_no_python_bridge_has_direct_diagnostic(self):
         (self.root / 'checkout/skills/ui-master/scripts/bridge.py').unlink()
