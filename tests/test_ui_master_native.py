@@ -40,6 +40,10 @@ class UIMNativeSmokeTests(unittest.TestCase):
         audit = self.run_uim('audit', str(target), '--json')
         self.assertEqual(audit.returncode, 0, audit.stderr)
         self.assertGreater(json.loads(audit.stdout)['violations_count'], 0)
+        self.assertIs(json.loads(audit.stdout)['complete'], True)
+        self.assertEqual(json.loads(audit.stdout)['engine'], 'rust')
+        self.assertEqual(len(json.loads(audit.stdout)['supported_rules']), 6)
+        self.assertEqual(json.loads(audit.stdout)['unavailable_rules'], [])
 
         extension = self.root / 'extension folder'
         extension.mkdir()
@@ -74,6 +78,73 @@ class UIMNativeSmokeTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('mcp', result.stdout)
         self.assertIn('stdio', result.stdout)
+
+    def test_native_capability_probe_matches_complete_audit(self):
+        probe = subprocess.run(
+            [str(ENGINE), 'audit-contract', '--json'],
+            text=True, capture_output=True, timeout=5,
+        )
+        self.assertEqual(probe.returncode, 0, probe.stderr)
+        contract = json.loads(probe.stdout)
+        self.assertEqual(contract['audit_contract'], 'comprehensive-v1')
+        report = self.run_uim('audit', str(REPO / 'tests/fixtures/ui_audit/clean.tsx'), '--json')
+        self.assertEqual(report.returncode, 0, report.stderr)
+        self.assertEqual(contract['supported_rules'], json.loads(report.stdout)['supported_rules'])
+
+    def test_native_audit_errors_never_look_clean(self):
+        missing = self.run_uim('audit', str(self.root / 'missing.tsx'), '--json')
+        self.assertEqual(missing.returncode, 2, missing.stderr)
+        self.assertIs(json.loads(missing.stdout)['complete'], False)
+
+        empty = self.root / 'empty'
+        empty.mkdir()
+        (empty / 'readme.md').write_text('unsupported')
+        unsupported = self.run_uim('audit', str(empty), '--json')
+        self.assertEqual(unsupported.returncode, 2, unsupported.stderr)
+        self.assertIs(json.loads(unsupported.stdout)['complete'], False)
+
+        bad = self.root / 'bad.tsx'
+        bad.write_bytes(b'\xff\xfe')
+        unreadable = self.run_uim('audit', str(bad), '--json')
+        self.assertEqual(unreadable.returncode, 70, unreadable.stderr)
+        self.assertIs(json.loads(unreadable.stdout)['complete'], False)
+
+        unknown_flag = self.run_uim('audit', str(bad), '--unknown', '--json')
+        self.assertEqual(unknown_flag.returncode, 2)
+        self.assertIs(json.loads(unknown_flag.stdout)['complete'], False)
+
+    def test_native_rig_and_mcp_disclose_identical_complete_coverage(self):
+        target = self.root / 'focus.tsx'
+        target.write_text('<button className="outline-none">Continue</button>')
+        raw_args = json.dumps({'path': str(target)})
+        rig = self.run_uim('rig', 'call', 'ui_anti_slop_lint', raw_args)
+        self.assertEqual(rig.returncode, 0, rig.stderr)
+        rig_report = json.loads(rig.stdout)
+        self.assertIs(rig_report['complete'], True)
+        self.assertEqual(rig_report['violations'][0]['rule'], 'a11y/focus-outline')
+
+        request = {
+            'jsonrpc': '2.0', 'id': 19, 'method': 'tools/call',
+            'params': {'name': 'ui_anti_slop_lint', 'arguments': {'path': str(target)}},
+        }
+        mcp = self.run_uim('mcp', input=json.dumps(request) + '\n')
+        self.assertEqual(mcp.returncode, 0, mcp.stderr)
+        payload = json.loads(mcp.stdout)
+        self.assertIs(payload['result']['isError'], False)
+        mcp_report = json.loads(payload['result']['content'][0]['text'])
+        self.assertEqual(mcp_report, rig_report)
+
+    def test_native_directory_scan_rule_set_and_count_are_stable(self):
+        target = REPO / 'tests/fixtures/ui_audit'
+        a = self.run_uim('audit', str(target), '--json')
+        b = self.run_uim('audit', str(target), '--json')
+        self.assertEqual(a.returncode, 0, a.stderr)
+        self.assertEqual(a.stdout, b.stdout)
+        report = json.loads(a.stdout)
+        self.assertEqual(report['files_scanned'], 8)
+        self.assertEqual(report['violations_count'], 8)
+        self.assertEqual(report['blocks'], 5)
+        self.assertEqual(report['flags'], 3)
 
     def test_portable_launcher_finds_installed_native_engine(self):
         binary = self.root / 'bin/uim'

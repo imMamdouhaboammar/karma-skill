@@ -31,6 +31,15 @@ async fn main() {
     let json_flag = args.iter().any(|a| a == "--json");
 
     match command {
+        "audit-contract" => {
+            // Used by launchers to reject stale binaries that predate the
+            // machine-readable completeness contract. No filesystem access.
+            println!("{}", serde_json::json!({
+                "audit_contract": "comprehensive-v1",
+                "engine": "rust",
+                "supported_rules": audit::AUDIT_RULES,
+            }));
+        }
         "mcp" => {
             if let Err(e) = mcp::run_mcp_server().await {
                 eprintln!("MCP server error: {}", e);
@@ -66,7 +75,20 @@ async fn main() {
         }
 
         "audit" => {
-            let target_path = args.get(2).map(|s| s.as_str()).unwrap_or(".");
+            let positional: Vec<&str> = args[2..].iter()
+                .filter(|value| value.as_str() != "--json")
+                .map(|value| value.as_str()).collect();
+            if positional.len() > 1 || positional.iter().any(|arg| arg.starts_with('-')) {
+                eprintln!("Usage: ui-master-engine audit <path> [--json] (native complete audit)");
+                if json_flag {
+                    println!("{}", serde_json::json!({
+                        "engine": "rust", "complete": false, "partial": false,
+                        "error": "invalid audit arguments",
+                    }));
+                }
+                std::process::exit(2);
+            }
+            let target_path = positional.first().copied().unwrap_or(".");
             match audit::scan_path(Path::new(target_path)) {
                 Ok(summary) => {
                     if json_flag {
@@ -75,6 +97,7 @@ async fn main() {
                         println!("\n🔍 UI-Master Anti-Slop & Quality Audit Report");
                         println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                         println!("Files scanned : {}", summary.files_scanned);
+                        println!("Coverage      : COMPLETE ({} native rules)", summary.supported_rules.len());
                         println!("Total findings: {} (BLOCK: {}, FLAG: {})", summary.violations_count, summary.blocks, summary.flags);
                         println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
                         for v in summary.violations {
@@ -85,7 +108,16 @@ async fn main() {
                         }
                     }
                 }
-                Err(e) => eprintln!("Error running audit: {}", e),
+                Err(e) => {
+                    let code = if e.starts_with("invalid audit target:") || e.starts_with("no supported UI files:") { 2 } else { 70 };
+                    eprintln!("Error running audit: {}", e);
+                    if json_flag {
+                        println!("{}", serde_json::json!({
+                            "engine": "rust", "complete": false, "partial": false, "error": e,
+                        }));
+                    }
+                    std::process::exit(code);
+                }
             }
         }
 
@@ -270,7 +302,8 @@ Rig AI Tools (rig.rs):
   rig call <tool_name> '<args_json>'    Invoke a Rig tool directly through the Rig tool interface
 
 Deterministic Quality Gates:
-  audit <path> [--json]                 Scan files/directories for anti-slop, a11y, and layout violations
+  audit-contract                        Report the native audit coverage contract for launcher discovery
+  audit <path> [--json]                 Scan UI files using all native rules (0=completed, 2=invalid, 70=read error)
   contrast <fg> <bg> [--json]           Calculate WCAG 2.2 AA/AAA relative luminance and contrast ratio
   crx <dir> [--json]                    Audit Chrome Extension manifest v3, Shadow DOM, and popup bounds
   skills <query> [--json]               Sub-millisecond BM25 keyword search across 421 design skills
