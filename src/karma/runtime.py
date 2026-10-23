@@ -15,6 +15,8 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
+from datetime import datetime, timezone
 from typing import Any, Callable
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -22,6 +24,8 @@ from urllib.request import Request, urlopen
 VERSION = '0.1.0'
 REPO_RE = re.compile(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\Z')
 SKILL_RE = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]*\Z')
+SHA_RE = re.compile(r'[0-9a-f]{40}\Z')
+REVIEW_PATH_RE = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]*(?:/[A-Za-z0-9][A-Za-z0-9_.-]*)*\Z')
 AGENTS = ('codex', 'claude-code', 'cursor', 'gemini', 'opencode', 'antigravity', 'windsurf', 'vscode', 'copilot')
 AGENT_PATHS = {
     'codex': '.agents/skills/find-karma',
@@ -99,7 +103,7 @@ def catalog_path() -> Path:
 def load_catalog(path: str | Path | None = None) -> list[dict[str, Any]]:
     source = Path(path) if path else catalog_path()
     data = json.loads(source.read_text(encoding='utf-8'))
-    if not isinstance(data, dict) or data.get('schema_version') != 1 or not isinstance(data.get('items'), list):
+    if not isinstance(data, dict) or data.get('schema_version') != 2 or not isinstance(data.get('items'), list):
         raise ValueError('Unsupported or malformed catalog schema')
     return data['items']
 
@@ -119,6 +123,32 @@ def validate_catalog(entries: list[dict[str, Any]]) -> list[str]:
             errors.append(f'{name}: source does not match repo')
         if item.get('status') not in ('candidate','reviewed'):
             errors.append(f'{name}: invalid review status')
+        if item.get('status') == 'reviewed':
+            revision = item.get('reviewed_revision')
+            path = item.get('reviewed_path')
+            timestamp = item.get('reviewed_at')
+            evidence = item.get('evidence')
+            if not isinstance(revision,str) or not SHA_RE.fullmatch(revision):
+                errors.append(f'{name}: reviewed entry requires full immutable SHA')
+            if not isinstance(path,str) or not REVIEW_PATH_RE.fullmatch(path):
+                errors.append(f'{name}: reviewed entry requires safe skill path')
+            elif (item.get('install') or {}).get('skill') != path.rsplit('/',1)[-1]:
+                errors.append(f'{name}: skill selector must match reviewed path')
+            if not isinstance(timestamp,str):
+                errors.append(f'{name}: reviewed entry requires review timestamp')
+            else:
+                try:
+                    checked = datetime.fromisoformat(timestamp.replace('Z','+00:00'))
+                    if checked.tzinfo is None or checked > datetime.now(timezone.utc):
+                        raise ValueError('invalid review time')
+                except ValueError:
+                    errors.append(f'{name}: invalid reviewed_at')
+            if (not isinstance(evidence,str) or not isinstance(repo,str) or
+                not isinstance(revision,str) or not isinstance(path,str) or
+                evidence != f'https://github.com/{repo}/blob/{revision}/{path}/SKILL.md'):
+                errors.append(f'{name}: evidence must point to reviewed SHA and SKILL.md')
+            if (item.get('install') or {}).get('method') != 'skills':
+                errors.append(f'{name}: manual installs cannot be revision-verified by Karma')
         if item.get('kind') not in ('skill','plugin','tool'):
             errors.append(f'{name}: invalid kind')
         if (item.get('install') or {}).get('method') not in ('skills','manual'):
@@ -229,26 +259,104 @@ def install_argv(item: dict[str, Any], agent: str) -> list[str] | None:
     if agent not in AGENTS: raise ValueError(f'Unknown agent: {agent}')
     if item.get('hosts') and agent not in item['hosts']: return None
     install = item['install']
-    if install.get('method') != 'skills': return None
+    if install.get('method') != 'skills':
+        raise ValueError('Manual installer cannot verify reviewed revision')
     repo = install.get('repo','')
     if not isinstance(repo,str) or not REPO_RE.fullmatch(repo) or '..' in repo:
         raise ValueError('Unsafe install repository name')
-    argv = ['npx','--yes','skills','add',repo]
-    skill = install.get('skill')
-    if skill:
-        if not isinstance(skill,str) or not SKILL_RE.fullmatch(skill): raise ValueError('Unsafe skill selector')
-        argv.extend(['--skill',skill])
-    argv.extend(['-a',agent,'-y'])
-    return argv
+    if item.get('status') != 'reviewed' or validate_catalog([item]):
+        raise ValueError('Cannot install without valid immutable review identity')
+    return ['karma','install',item['id'],'--agent',agent,'--execute','--yes']
 
 
 def install_instructions(item: dict[str, Any], agent: str) -> str:
+    if item.get('status') != 'reviewed':
+        return 'Unreviewed candidate: no installation guidance or approval claim; revision-specific re-review required.'
     if item.get('hosts') and agent not in item['hosts']:
         return f'Not supported for {agent}; check listed hosts.'
     cmd = install_argv(item,agent)
     if cmd:
-        return ' '.join(shlex.quote(x) for x in cmd)
-    return item['install'].get('instructions') or f'Review README first: {item["source"]}'
+        return (f'Reviewed commit {item["reviewed_revision"]}, path {item["reviewed_path"]}; '
+                f'evidence: {item["evidence"]}. With explicit approval, run: '
+                + ' '.join(shlex.quote(x) for x in cmd) +
+                '. Karma fetches this exact commit and refuses revision/path mismatches; no mutable skills CLI ref is used.')
+    return f'No automated revision-verified installation for this host; inspect {item["evidence"]}.'
+
+
+def _git(args: list[str], *, cwd: Path, env: dict[str,str]) -> str:
+    completed = subprocess.run(['git','-c','core.hooksPath='+os.devnull,
+                                '-c','core.autocrlf=false',*args],cwd=cwd,env=env,
+                               check=True,capture_output=True,text=True,timeout=120)
+    return completed.stdout.strip()
+
+
+def _checkout_revision(url: str, revision: str, root: Path, *, allow_local: bool=False) -> None:
+    """Fetch and verify an exact commit in an isolated checkout (local URL only in fixtures)."""
+    if not SHA_RE.fullmatch(revision):
+        raise ValueError('A full immutable reviewed SHA is required')
+    if not url.startswith('https://github.com/') and not allow_local:
+        raise ValueError('Only a reviewed GitHub HTTPS source may be fetched')
+    # Ignore caller-provided Git overrides/configurations that could execute filters or hooks.
+    env = {k:v for k,v in os.environ.items() if not k.startswith('GIT_')}
+    env.update(GIT_TERMINAL_PROMPT='0',GIT_CONFIG_NOSYSTEM='1',
+               GIT_CONFIG_GLOBAL=os.devnull,GIT_LFS_SKIP_SMUDGE='1',
+               GIT_ALLOW_PROTOCOL='file' if allow_local else 'https')
+    _git(['init','-q'],cwd=root,env=env)
+    _git(['remote','add','origin',url],cwd=root,env=env)
+    _git(['fetch','--no-tags','--depth','1','origin',revision],cwd=root,env=env)
+    _git(['checkout','--detach','-q','FETCH_HEAD'],cwd=root,env=env)
+    actual = _git(['rev-parse','--verify','HEAD'],cwd=root,env=env)
+    if actual != revision:
+        raise ValueError(f'Fetched revision mismatch: expected {revision}, got {actual}')
+    if _git(['status','--porcelain','--untracked-files=all','--ignored=matching'],cwd=root,env=env):
+        raise ValueError('Checked out files differ from reviewed commit')
+
+
+def _checked_skill_path(checkout: Path, path: str) -> Path:
+    if not isinstance(path,str) or not REVIEW_PATH_RE.fullmatch(path):
+        raise ValueError('Unsafe reviewed skill path')
+    skill = checkout / path
+    if not skill.is_dir() or not (skill/'SKILL.md').is_file():
+        raise ValueError('Reviewed SKILL.md is missing at the pinned revision')
+    for part in (checkout / Path(*Path(path).parts[:i]) for i in range(1,len(Path(path).parts)+1)):
+        if part.is_symlink(): raise ValueError('Reviewed path contains a symlink')
+    for base,dirs,files in os.walk(skill,followlinks=False):
+        if any((Path(base)/name).is_symlink() for name in (*dirs,*files)):
+            raise ValueError('Reviewed skill contains a symlink')
+    return skill
+
+
+def _install_reviewed(item: dict[str,Any], agent: str, project: Path) -> Path:
+    """Only after --execute --yes: copy the exact reviewed skill to its host directory."""
+    if validate_catalog([item]) or item['status'] != 'reviewed':
+        raise ValueError('Missing or invalid review identity; refusing installation')
+    if agent not in AGENTS or (item.get('hosts') and agent not in item['hosts']):
+        raise ValueError('Unsupported agent host')
+    source = 'https://github.com/' + item['install']['repo'] + '.git'
+    with tempfile.TemporaryDirectory(prefix='karma-reviewed-checkout-') as temporary:
+        checkout = Path(temporary)
+        try:
+            _checkout_revision(source,item['reviewed_revision'],checkout)
+            skill = _checked_skill_path(checkout,item['reviewed_path'])
+        except (subprocess.CalledProcessError,subprocess.TimeoutExpired) as exc:
+            raise RuntimeError('Cannot verify exact reviewed commit; no installation performed') from exc
+        dest = project / AGENT_BASE[agent] / skill.name
+        parent = dest.parent
+        for part in (project / Path(*parent.relative_to(project).parts[:i])
+                     for i in range(1,len(parent.relative_to(project).parts)+1)):
+            if part.is_symlink(): raise ValueError('Refusing a symlinked destination directory')
+        if dest.exists() or dest.is_symlink():
+            raise ValueError(f'Destination exists; refusing to replace it: {dest}')
+        parent.mkdir(parents=True,exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix='.karma-stage-',dir=parent) as staging:
+            staged = Path(staging) / skill.name
+            shutil.copytree(skill,staged)
+            if not (staged/'SKILL.md').is_file():
+                raise ValueError('Staged skill lost SKILL.md')
+            if dest.exists() or dest.is_symlink():
+                raise ValueError('Destination appeared during installation; refusing replacement')
+            staged.rename(dest)
+        return dest
 
 
 def find(entries: list[dict[str, Any]], project_signals: set[str], goal: str='',
@@ -387,9 +495,9 @@ def make_parser() -> argparse.ArgumentParser:
     s=sub.add_parser('show',help='Print one catalog record')
     s.add_argument('id'); s.add_argument('--agent',choices=AGENTS,default='codex')
     s.add_argument('--json',action='store_true')
-    i=sub.add_parser('install',help='Preview first; explicit flags required to run skills.sh installer')
+    i=sub.add_parser('install',help='Preview first; explicit flags required for verified pinned checkout')
     i.add_argument('id'); i.add_argument('--agent',choices=AGENTS,required=True)
-    i.add_argument('--execute',action='store_true',help='Execute approved skills CLI install')
+    i.add_argument('--execute',action='store_true',help='Fetch and copy the exactly reviewed skill')
     i.add_argument('--yes',action='store_true',help='Confirm reviewed external installation')
     a=sub.add_parser('init-agent',aliases=['init'],help='Copy self-contained find-karma or ui-master skill into this project')
     a.add_argument('--project',default='.')
@@ -470,19 +578,18 @@ def main(argv: list[str] | None=None) -> int:
             if entry['status']!='reviewed': raise ValueError('Candidate not reviewed: cannot install via KARMA')
             cmd=install_argv(entry,args.agent)
             if cmd is None:
-                print('Manual installation or incompatible host. Review: '+install_instructions(entry,args.agent))
-                return 0 if not args.execute else 2
+                raise ValueError('No revision-verified installation available for this agent host')
             print('Installation command: '+' '.join(map(shlex.quote,cmd)),flush=True)
-            print('Source: '+entry['source'])
+            print('Reviewed source: '+entry['evidence'])
             if not args.execute:
-                print('DRY RUN. Use --execute --yes only after reviewing and approving this source.')
+                print('DRY RUN. No fetch or installation. Use --execute --yes after reviewing the pinned source.')
                 return 0
             if not args.yes:
                 raise ValueError('Explicit --yes required with --execute; never silently install')
-            if not shutil.which('npx'): raise RuntimeError('npx unavailable; install Node/npm or use the self-contained skill instead')
-            print('Executing approved installer in current directory...',flush=True)
-            completed=subprocess.run(cmd,check=False)
-            return completed.returncode
+            if not shutil.which('git'): raise RuntimeError('git unavailable; verified revision install cannot proceed')
+            installed = _install_reviewed(entry,args.agent,Path.cwd().resolve())
+            print('Installed exact reviewed revision to: '+str(installed))
+            return 0
         elif args.command in ('init-agent', 'init'):
             root=Path(args.project).expanduser().resolve(strict=True)
             if not root.is_dir(): raise ValueError('Project root is not a directory')

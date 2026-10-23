@@ -1,7 +1,7 @@
 {
-  "schema_version": 1,
-  "updated": "2026-10-02",
-  "review_policy": "Docs/structure review, not guaranteed performance; candidates excluded from recommendations.",
+  "schema_version": 2,
+  "updated": "2026-10-23",
+  "review_policy": "Only named SKILL.md paths inspected at a full immutable Git commit are reviewed. Older mutable inspections are candidates; no general safety guarantee.",
   "items": [
     {
       "id": "matt-engineering",
@@ -24,10 +24,10 @@
         "tdd",
         "typescript"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/mattpocock/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "mattpocock/skills"
@@ -53,13 +53,16 @@
       ],
       "status": "reviewed",
       "provenance": "user-stars",
-      "evidence": "https://github.com/mattpocock/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/mattpocock/skills/blob/5beb35b040e3de97e54fa9e386d7e42d15c295c2/skills/engineering/tdd/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "mattpocock/skills",
         "skill": "tdd"
-      }
+      },
+      "reviewed_revision": "5beb35b040e3de97e54fa9e386d7e42d15c295c2",
+      "reviewed_path": "skills/engineering/tdd",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "trailofbits-security",
@@ -80,10 +83,10 @@
         "audit",
         "threat"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/trailofbits/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "manual",
         "repo": "trailofbits/skills",
@@ -107,10 +110,10 @@
         "plugins",
         "security"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/trailofbits/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "manual",
         "repo": "trailofbits/skills",
@@ -138,10 +141,10 @@
         "experiments",
         "scientific"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/K-Dense-AI/scientific-agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "K-Dense-AI/scientific-agent-skills"
@@ -166,10 +169,10 @@
         "video",
         "graphics"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/imMamdouhaboammar/motion-graphics-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "imMamdouhaboammar/motion-graphics-skills"
@@ -194,10 +197,10 @@
         "governance",
         "security"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/imMamdouhaboammar/dokion#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "manual",
         "repo": "imMamdouhaboammar/dokion",
@@ -226,10 +229,10 @@
         "governance",
         "agent"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/imMamdouhaboammar/agent-kernel#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "imMamdouhaboammar/agent-kernel"
@@ -253,10 +256,10 @@
         "delegation",
         "agents"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/imMamdouhaboammar/delegate-team#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "imMamdouhaboammar/delegate-team"
@@ -283,10 +286,10 @@
         "scanner",
         "supplychain"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/cisco-ai-defense/skill-scanner#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "manual",
         "repo": "cisco-ai-defense/skill-scanner",
@@ -315,10 +318,10 @@
         "security",
         "audit"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/NVIDIA/SkillSpector#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "manual",
         "repo": "NVIDIA/SkillSpector",
@@ -348,10 +351,10 @@
         "testing",
         "llm"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/ai-evals-course/evals-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "ai-evals-course/evals-skills"
@@ -375,10 +378,10 @@
         "planning",
         "secondopinion"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/kitze/council#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "kitze/council"
@@ -388,10 +391,10 @@
       "id": "ui-master",
       "name": "UI-Master Engineering Suite",
       "source": "https://github.com/imMamdouhaboammar/karma-skill",
-      "kind": "tool",
+      "kind": "skill",
       "lane": "frontend-quality",
-      "summary": "Elite UI/UX/CRX design engineering agent, 421 ui-skills catalog, Rig Rust engine, and anti-slop gates.",
-      "benefit": "Eliminates UI slop, enforces WCAG 2.2 AAA/AA contrast, validates Chrome Extension MV3 isolation, and orchestrates multi-agent design reviews.",
+      "summary": "Design engineering agent with a bundled catalog and native UI checks; Rust tools require a separately available engine.",
+      "benefit": "Design engineering agent with a bundled catalog and native UI checks; Rust tools require a separately available engine.",
       "signals": [
         "task:frontend",
         "task:design",
@@ -413,13 +416,16 @@
       ],
       "status": "reviewed",
       "provenance": "curated",
-      "evidence": "https://github.com/imMamdouhaboammar/karma-skill#readme",
-      "review_note": "First-class bundled agent and native verification suite.",
+      "evidence": "https://github.com/imMamdouhaboammar/karma-skill/blob/175c7ae78a2d4f359e6e741bf8949fe2c35fa4c9/skills/ui-master/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "imMamdouhaboammar/karma-skill",
         "skill": "ui-master"
-      }
+      },
+      "reviewed_revision": "175c7ae78a2d4f359e6e741bf8949fe2c35fa4c9",
+      "reviewed_path": "skills/ui-master",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "ui-skills",
@@ -442,12 +448,16 @@
       ],
       "status": "reviewed",
       "provenance": "user-stars",
-      "evidence": "https://github.com/ibelick/ui-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/ibelick/ui-skills/blob/55363c305097d4c84487bd5f323d29b3f067bf72/skills/ui-skills-root/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
-        "repo": "ibelick/ui-skills"
-      }
+        "repo": "ibelick/ui-skills",
+        "skill": "ui-skills-root"
+      },
+      "reviewed_revision": "55363c305097d4c84487bd5f323d29b3f067bf72",
+      "reviewed_path": "skills/ui-skills-root",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "daymade-claude",
@@ -468,10 +478,10 @@
         "review",
         "skills"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/daymade/claude-code-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "manual",
         "repo": "daymade/claude-code-skills",
@@ -496,10 +506,10 @@
         "design",
         "frontend"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/imMamdouhaboammar/portfolio-interview#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "imMamdouhaboammar/portfolio-interview"
@@ -523,10 +533,10 @@
         "author",
         "evals"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/Songhonglei/build-better-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "Songhonglei/build-better-skills"
@@ -550,10 +560,10 @@
         "workflows",
         "maintenance"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "user-stars",
       "evidence": "https://github.com/stark-ai-de/agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "stark-ai-de/agent-skills"
@@ -577,10 +587,10 @@
         "nextjs",
         "frontend"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "ecosystem-docs",
       "evidence": "https://github.com/vercel-labs/agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "vercel-labs/agent-skills"
@@ -604,10 +614,10 @@
         "discovery",
         "search"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "ecosystem-docs",
       "evidence": "https://github.com/vercel-labs/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "vercel-labs/skills",
@@ -632,10 +642,10 @@
         "animation",
         "render"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "ecosystem-docs",
       "evidence": "https://github.com/heygen-com/hyperframes#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "heygen-com/hyperframes"
@@ -662,10 +672,10 @@
         "e2e",
         "scraping"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "ecosystem-docs",
       "evidence": "https://github.com/vercel-labs/agent-browser#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "vercel-labs/agent-browser",
@@ -696,13 +706,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/anthropics/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/webapp-testing/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "anthropics/skills",
         "skill": "webapp-testing"
-      }
+      },
+      "reviewed_revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "reviewed_path": "skills/webapp-testing",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "vercel-react-best-practices",
@@ -727,13 +740,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/react-best-practices/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "vercel-labs/agent-skills",
-        "skill": "vercel-react-best-practices"
-      }
+        "skill": "react-best-practices"
+      },
+      "reviewed_revision": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "reviewed_path": "skills/react-best-practices",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "vercel-composition-patterns",
@@ -756,13 +772,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/composition-patterns/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "vercel-labs/agent-skills",
-        "skill": "vercel-composition-patterns"
-      }
+        "skill": "composition-patterns"
+      },
+      "reviewed_revision": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "reviewed_path": "skills/composition-patterns",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "anthropic-frontend-design",
@@ -786,13 +805,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/anthropics/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/frontend-design/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "anthropics/skills",
         "skill": "frontend-design"
-      }
+      },
+      "reviewed_revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "reviewed_path": "skills/frontend-design",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "web-design-guidelines",
@@ -816,13 +838,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/web-design-guidelines/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "vercel-labs/agent-skills",
         "skill": "web-design-guidelines"
-      }
+      },
+      "reviewed_revision": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "reviewed_path": "skills/web-design-guidelines",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "superpowers-tdd",
@@ -845,13 +870,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/obra/superpowers#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/test-driven-development/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "obra/superpowers",
         "skill": "test-driven-development"
-      }
+      },
+      "reviewed_revision": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "reviewed_path": "skills/test-driven-development",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "antfu-vitest",
@@ -876,13 +904,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/antfu/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/antfu/skills/blob/8886fe2d385d3644cbb47e46ae9cb1cf09307d3b/skills/vitest/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "antfu/skills",
         "skill": "vitest"
-      }
+      },
+      "reviewed_revision": "8886fe2d385d3644cbb47e46ae9cb1cf09307d3b",
+      "reviewed_path": "skills/vitest",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "supabase-postgres",
@@ -908,13 +939,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/supabase/agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/supabase/agent-skills/blob/c9be0e931b7930f7d02126d04774d904c381e7d7/skills/supabase-postgres-best-practices/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "supabase/agent-skills",
         "skill": "supabase-postgres-best-practices"
-      }
+      },
+      "reviewed_revision": "c9be0e931b7930f7d02126d04774d904c381e7d7",
+      "reviewed_path": "skills/supabase-postgres-best-practices",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "supabase-fullstack",
@@ -941,13 +975,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/supabase/agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/supabase/agent-skills/blob/c9be0e931b7930f7d02126d04774d904c381e7d7/skills/supabase/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "supabase/agent-skills",
         "skill": "supabase"
-      }
+      },
+      "reviewed_revision": "c9be0e931b7930f7d02126d04774d904c381e7d7",
+      "reviewed_path": "skills/supabase",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "prisma-setup",
@@ -972,13 +1009,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/prisma/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/prisma/skills/blob/ba3f9d73200bbb62e49733ab93a961fd138a2c18/prisma-database-setup/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "prisma/skills",
         "skill": "prisma-database-setup"
-      }
+      },
+      "reviewed_revision": "ba3f9d73200bbb62e49733ab93a961fd138a2c18",
+      "reviewed_path": "prisma-database-setup",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "copilot-docker",
@@ -1000,10 +1040,10 @@
         "devops",
         "ci"
       ],
-      "status": "reviewed",
+      "status": "candidate",
       "provenance": "ecosystem-docs",
       "evidence": "https://github.com/github/awesome-copilot#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "review_note": "Previous README/structure inspection lacks immutable review evidence; do not install as reviewed.",
       "install": {
         "method": "skills",
         "repo": "github/awesome-copilot",
@@ -1033,13 +1073,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/vercel-labs/agent-skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/deploy-to-vercel/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "vercel-labs/agent-skills",
         "skill": "deploy-to-vercel"
-      }
+      },
+      "reviewed_revision": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "reviewed_path": "skills/deploy-to-vercel",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "anthropic-doc-coauthoring",
@@ -1064,13 +1107,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/anthropics/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/doc-coauthoring/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "anthropics/skills",
         "skill": "doc-coauthoring"
-      }
+      },
+      "reviewed_revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "reviewed_path": "skills/doc-coauthoring",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "anthropic-mcp-builder",
@@ -1095,13 +1141,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/anthropics/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/mcp-builder/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "anthropics/skills",
         "skill": "mcp-builder"
       },
+      "reviewed_revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "reviewed_path": "skills/mcp-builder",
+      "reviewed_at": "2026-10-23T13:16:05Z",
       "require_any": [
         "task:plugin",
         "task:architecture"
@@ -1129,13 +1178,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/obra/superpowers#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/using-git-worktrees/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "obra/superpowers",
         "skill": "using-git-worktrees"
-      }
+      },
+      "reviewed_revision": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "reviewed_path": "skills/using-git-worktrees",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "superpowers-systematic-debugging",
@@ -1158,13 +1210,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/obra/superpowers#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/systematic-debugging/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "obra/superpowers",
         "skill": "systematic-debugging"
-      }
+      },
+      "reviewed_revision": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "reviewed_path": "skills/systematic-debugging",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "superpowers-brainstorming",
@@ -1187,13 +1242,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/obra/superpowers#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/brainstorming/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "obra/superpowers",
         "skill": "brainstorming"
-      }
+      },
+      "reviewed_revision": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "reviewed_path": "skills/brainstorming",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "antfu-vue",
@@ -1217,13 +1275,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/antfu/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/antfu/skills/blob/8886fe2d385d3644cbb47e46ae9cb1cf09307d3b/skills/vue/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "antfu/skills",
         "skill": "vue"
-      }
+      },
+      "reviewed_revision": "8886fe2d385d3644cbb47e46ae9cb1cf09307d3b",
+      "reviewed_path": "skills/vue",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "antfu-vite",
@@ -1247,13 +1308,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/antfu/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/antfu/skills/blob/8886fe2d385d3644cbb47e46ae9cb1cf09307d3b/skills/vite/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "antfu/skills",
         "skill": "vite"
-      }
+      },
+      "reviewed_revision": "8886fe2d385d3644cbb47e46ae9cb1cf09307d3b",
+      "reviewed_path": "skills/vite",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "anthropic-pdf",
@@ -1276,13 +1340,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/anthropics/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/pdf/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "anthropics/skills",
         "skill": "pdf"
-      }
+      },
+      "reviewed_revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "reviewed_path": "skills/pdf",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "anthropic-docx",
@@ -1305,13 +1372,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/anthropics/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/docx/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "anthropics/skills",
         "skill": "docx"
-      }
+      },
+      "reviewed_revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "reviewed_path": "skills/docx",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "anthropic-xlsx",
@@ -1335,13 +1405,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/anthropics/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/xlsx/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "anthropics/skills",
         "skill": "xlsx"
-      }
+      },
+      "reviewed_revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "reviewed_path": "skills/xlsx",
+      "reviewed_at": "2026-10-23T13:16:05Z"
     },
     {
       "id": "anthropic-skill-creator",
@@ -1364,13 +1437,16 @@
       ],
       "status": "reviewed",
       "provenance": "ecosystem-docs",
-      "evidence": "https://github.com/anthropics/skills#readme",
-      "review_note": "Repository structure and/or README inspected. No independent benchmark or security guarantee.",
+      "evidence": "https://github.com/anthropics/skills/blob/dbd4588f9e1033efb41dad4bef2f7947c8993d44/skills/skill-creator/SKILL.md",
+      "review_note": "Verified entrypoint purpose and path at a fixed commit on 2026-10-23; no malware, dependency, or performance certification.",
       "install": {
         "method": "skills",
         "repo": "anthropics/skills",
         "skill": "skill-creator"
       },
+      "reviewed_revision": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
+      "reviewed_path": "skills/skill-creator",
+      "reviewed_at": "2026-10-23T13:16:05Z",
       "require_any": [
         "task:skills",
         "task:plugin",

@@ -4,7 +4,6 @@ import asyncio
 from contextlib import asynccontextmanager
 import importlib.util
 import sys
-import re
 import unittest
 from unittest.mock import patch
 
@@ -68,12 +67,13 @@ class MCPRecommendationTests(unittest.TestCase):
     def test_goal_matching_catalog_tags_returns_recommendations(self):
         result = mcp_service.recommend_skills('portfolio interview design', agent='codex', limit=3)
         self.assertTrue(result['recommendations'])
-        self.assertIn('portfolio', result['recommendations'][0]['id'])
+        self.assertTrue(all(item['status'] == 'reviewed' for item in result['recommendations']))
+        self.assertNotIn('portfolio-interview', [item['id'] for item in result['recommendations']])
 
     def test_get_guide_is_curated_only_and_never_installs(self):
         guide = mcp_service.get_skill_guide('matt-tdd', agent='codex')
         self.assertEqual(guide['id'], 'matt-tdd')
-        self.assertIn('--skill tdd', guide['installation_guide'])
+        self.assertIn('skills/engineering/tdd', guide['installation_guide'])
         self.assertFalse(guide['installed'])
         self.assertIn('approval', guide['next_step'].lower())
         with self.assertRaisesRegex(ValueError, 'reviewed'):
@@ -100,7 +100,7 @@ class MCPRecommendationTests(unittest.TestCase):
         self.assertIn('Clarify', result['no_match_guidance'])
 
     def test_guide_rejects_host_incompatible_and_candidate_skills(self):
-        with self.assertRaisesRegex(ValueError, 'not available'):
+        with self.assertRaisesRegex(ValueError, 'reviewed'):
             mcp_service.get_skill_guide('claude-plugin-review', agent='codex')
         with self.assertRaises(ValueError):
             mcp_service.get_skill_guide('matt-tdd', agent='evil-agent')
@@ -126,7 +126,7 @@ class MCPProtocolTests(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue(response.structured_content['recommendations'])
                 guide = await client.call_tool('get_skill_guide', {'skill_id': 'matt-tdd'})
                 self.assertFalse(guide.is_error)
-                self.assertIn('npx', guide.structured_content['installation_guide'])
+                self.assertIn('karma install matt-tdd', guide.structured_content['installation_guide'])
 
     async def test_invalid_id_returns_tool_error(self):
         from mcp import Client

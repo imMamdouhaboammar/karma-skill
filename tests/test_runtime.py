@@ -33,7 +33,7 @@ class KarmaTests(unittest.TestCase):
         self.write('Cargo.toml', '[package]\nname="safe"\nversion="0.1.0"')
         found = runtime.find(runtime.load_catalog(), runtime.detect_project(self.root), goal='security audit secrets', limit=5)
         self.assertTrue(found)
-        self.assertIn(found[0]['id'], {'trailofbits-security', 'dokion', 'security-audit', 'skill-scanner'})
+        self.assertTrue(all(item['reviewed_revision'] for item in found))
         self.assertNotIn('motion-graphics', [x['id'] for x in found])
 
     def test_find_results_include_reasons_and_install_instructions(self):
@@ -56,14 +56,15 @@ class KarmaTests(unittest.TestCase):
             runtime.install_argv(item, 'codex')
 
     def test_install_is_dry_run_by_default(self):
-        item = next(x for x in runtime.load_catalog() if x['id']=='matt-engineering')
+        item = next(x for x in runtime.load_catalog() if x['id']=='matt-tdd')
         argv = runtime.install_argv(item, 'codex')
-        self.assertEqual(argv[:4], ['npx', '--yes', 'skills', 'add'])
-        self.assertIn('-a', argv)
+        self.assertEqual(argv[:3], ['karma', 'install', 'matt-tdd'])
+        self.assertIn('--execute', argv)
         self.assertNotIn('sh', argv)
 
     def test_agent_only_entry_does_not_install_in_wrong_host(self):
-        item = next(x for x in runtime.load_catalog() if x['id']=='claude-plugin-review')
+        item = next(x for x in runtime.load_catalog() if x['id']=='matt-tdd')
+        item = {**item, 'hosts':['claude-code']}
         self.assertIsNone(runtime.install_argv(item, 'codex'))
 
     def test_diversify_recommendations(self):
@@ -113,7 +114,7 @@ class KarmaTests(unittest.TestCase):
 
     def test_install_command_previews_without_execution(self):
         with patch('subprocess.run') as run:
-            result=runtime.main(['install','matt-engineering','--agent','codex'])
+            result=runtime.main(['install','matt-tdd','--agent','codex'])
             self.assertEqual(result,0)
             run.assert_not_called()
 
@@ -185,7 +186,7 @@ class KarmaTests(unittest.TestCase):
 
     def test_install_execute_without_yes_raises_error(self):
         with patch('subprocess.run') as mock_run:
-            rc = runtime.main(['install', 'matt-engineering', '--agent', 'codex', '--execute'])
+            rc = runtime.main(['install', 'matt-tdd', '--agent', 'codex', '--execute'])
             self.assertEqual(rc, 2)
             mock_run.assert_not_called()
 
@@ -201,14 +202,12 @@ class KarmaTests(unittest.TestCase):
             self.assertEqual(rc, 2)
 
     def test_install_approved_runs_expected_cmd(self):
-        with patch('subprocess.run') as mock_run, patch('shutil.which', return_value='/usr/local/bin/npx'):
-            mock_run.return_value.returncode = 0
-            rc = runtime.main(['install', 'matt-engineering', '--agent', 'codex', '--execute', '--yes'])
+        with patch('karma.runtime._install_reviewed', return_value=self.root/'installed') as verified, patch('shutil.which', return_value='/usr/bin/git'):
+            rc = runtime.main(['install', 'matt-tdd', '--agent', 'codex', '--execute', '--yes'])
             self.assertEqual(rc, 0)
-            mock_run.assert_called_once()
-            args = mock_run.call_args[0][0]
-            self.assertEqual(args[:4], ['npx', '--yes', 'skills', 'add'])
-            self.assertEqual(args[-3:], ['-a', 'codex', '-y'])
+            verified.assert_called_once()
+            self.assertEqual(verified.call_args.args[0]['id'], 'matt-tdd')
+            self.assertEqual(verified.call_args.args[1], 'codex')
 
     def test_detect_database_signals_from_prisma_and_supabase(self):
         self.write('prisma/schema.prisma', 'datasource db { provider = "postgresql" }')
