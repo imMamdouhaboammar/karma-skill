@@ -14,5 +14,5 @@
 2. Present 2-5 recommendations with:
    - Reason for match
    - Source repository
-   - Installation preview command (`npx --yes skills add <repo> -a windsurf -y`)
+   - Revision-bound installation preview (`karma install <id> --agent windsurf`)
 3. Await explicit confirmation before installing.

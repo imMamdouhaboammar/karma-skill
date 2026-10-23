@@ -16,5 +16,5 @@
    - Skill name & lane
    - **Why now** (concrete repository signals matching the goal)
    - Verified source repository
-   - Installation instructions (Claude plugin or `npx skills add`)
+   - Reviewed commit, exact path and `karma install <id> --agent claude-code` dry-run guidance
 4. **Safety Invariant**: Do NOT execute installation or marketplace commands automatically. Claude Code must prompt the user for approval.

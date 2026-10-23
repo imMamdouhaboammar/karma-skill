@@ -16,5 +16,5 @@
 3. Parse the structured JSON output and present 2-5 recommendations with:
    - Name and purpose
    - Exact matching evidence
-   - Preview of install command: `npx --yes skills add <repo> -a codex -y`
+   - Reviewed SHA, skill path, and dry-run command: `karma install <id> --agent codex`
 4. **Safety Invariant**: Never invoke shell execution of third-party skills without explicit approval.
