@@ -44,6 +44,12 @@ Documentation = "https://github.com/imMamdouhaboammar/karma-skill#readme"
 [project.scripts]
 karma = "karma.runtime:main"
 find-karma = "karma.runtime:main"
+karma-mcp = "karma.mcp_server:main"
+
+[project.optional-dependencies]
+# The existing stdlib CLI continues to support Python 3.10.
+# The official MCP SDK v2 requires Python 3.11+.
+mcp = ["mcp>=2,<3"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}

@@ -22,6 +22,9 @@ KARMA ☯ is designed with a defense-in-depth, offline-first security architectu
 6. **Shell Injection Defense**:
    All CLI arguments and external command executions are strictly array-passed and quoted with `shlex.quote`. Unvalidated string interpolation in subshells is strictly prohibited.
 
+7. **MCP Advice-Only Boundary**:
+   The optional `karma-mcp` stdio server exposes only `recommend_skills` and `get_skill_guide`. Both operate against the packaged, reviewed catalog. MCP requests supply a task and optional public stack tags, not repository paths, source code or credentials. Tools never install skills, run commands, read the client's project, contact a marketplace, or enable implicit approval. Returned commands are untrusted suggestions requiring the user's explicit approval before execution.
+
 ## Reporting a Vulnerability
 
 If you discover a potential security vulnerability in KARMA, please report it privately:
