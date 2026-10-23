@@ -54,8 +54,12 @@ jobs:
   ui-master-native:
     name: UI-Master Rust and launcher smoke
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
