@@ -73,6 +73,19 @@ class KarmaTests(unittest.TestCase):
         lanes = [x['lane'] for x in found]
         self.assertEqual(len(lanes),len(set(lanes)))
 
+    def test_strict_goal_evidence_is_opt_in_for_mcp_without_changing_cli_find(self):
+        catalog = runtime.load_catalog()
+        project_only = next(x for x in catalog if x['id'] == 'matt-tdd').copy()
+        relevant = next(x for x in catalog if x['id'] == 'ui-master').copy()
+        project_only.update(signals=['task:testing', 'task:review', 'language:typescript'], tags=[])
+        relevant.update(signals=['task:frontend'], tags=['wcag', 'accessibility'])
+        signals = {'task:frontend', 'task:testing', 'task:review', 'language:typescript'}
+        ordinary = runtime.find([project_only, relevant], signals, goal='wcag accessibility', limit=1)
+        strict = runtime.find([project_only, relevant], signals, goal='wcag accessibility',
+                              limit=1, require_goal_evidence=True)
+        self.assertEqual([item['id'] for item in ordinary], ['matt-tdd'])
+        self.assertEqual([item['id'] for item in strict], ['ui-master'])
+
     def test_stars_classified_as_candidates_not_curated(self):
         repos = [{'full_name':'invented/skillpack','html_url':'https://github.com/invented/skillpack','description':'skills for python'}]
         out=runtime.star_candidates(repos, {x['source'].removeprefix('https://github.com/') for x in runtime.load_catalog()})
