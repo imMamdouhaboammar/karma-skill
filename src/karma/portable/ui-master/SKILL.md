@@ -5,13 +5,13 @@ description: Elite UI/UX/CRX Design Engineering Agent. Weaponized with the 421 u
 
 # UI-Master (☯ KARMA Design Engineering Suite)
 
-UI-Master (`@ui-master`) is an autonomous, high-discipline design engineering agent designed to eliminate UI slop, enforce WCAG 2.2 AAA/AA compliance, maintain Chrome Extension (CRX) MV3 security isolation, and navigate the 421 curated design engineering skills from `ui-skills`.
+UI-Master (`@ui-master`) provides UI design guidance, native heuristic audits, contrast calculations, and Chrome Extension checks. Its audit rules are not a substitute for manual accessibility testing or WCAG certification.
 
 ## Capabilities & Architecture
 
 1. **Deterministic Rust Rig Engine (`uim` / `ui-master-engine`)**:
    - `ui_contrast`: Exact relative luminance & contrast ratio calculation under WCAG 2.2 algorithms.
-   - `ui_anti_slop_lint`: AST & heuristic audits for `h-screen` bugs, layout thrashing, arbitrary `z-index`, and unrequested animations.
+   - `ui_anti_slop_lint`: Six native line-based heuristic rules for gradients, `h-screen`, layout animations, focus outlines, arbitrary spacing, and typography scale.
    - `ui_crx_audit`: Manifest V3 validation, Closed Shadow DOM encapsulation, and popup boundary audits.
    - `ui_skill_search`: Sub-millisecond BM25 keyword search across 421 design skills.
    - `ui_skill_get`: Instant retrieval of skill contracts and rules from local catalog.
@@ -30,15 +30,24 @@ UI-Master (`@ui-master`) is an autonomous, high-discipline design engineering ag
    - Stdio Native Server: `uim mcp` (sub-millisecond JSON-RPC 2.0 Rig tool execution).
 
 The `uim` launcher uses a compiled engine when available. Otherwise it uses
-Python for `contrast` and the limited `audit` fallback, and offline Cargo for
-native-only commands (`crx`, `skills`, `mcp`, `rig`, `get-skill`, `trace`).
+Python for `contrast`, and offline Cargo for native commands (`audit`, `crx`,
+`skills`, `mcp`, `rig`, `get-skill`, `trace`).
 Build the Rust engine explicitly from the full checkout when dependencies are
 not cached: `cargo build --locked --manifest-path crates/ui-master-engine/Cargo.toml`.
 Portable installs without native engine source require a separately installed
 `uim` binary for those commands. `UIM_CARGO_RUN=1` or `true` also routes bridge
 commands through Cargo; unset, `auto`, `0`, and `false` retain normal dispatch.
-The Python `audit` bridge currently checks only `h-screen`, so its clean result
-does not certify other accessibility or anti-slop rules (see Issue #5).
+`uim audit <path> --json` requires the complete native rule set. Without a native
+engine (or locally cached Cargo dependencies in a source checkout), it fails
+with exit 69 instead of reporting clean. Use `uim audit <path> --partial --json`
+to explicitly request the Python `h-screen`-only scan. Partial results always
+return exit 3, even with zero findings, and include `complete: false`,
+`supported_rules` and `unavailable_rules`. Native audit results have
+`complete: true` only if all six rules processed at least one supported file
+without read errors. A complete scan with findings still exits 0; inspect
+`violations_count`, `blocks`, and `flags` before treating the result as clean.
+Invalid targets/unsupported flags exit 2; scan read failures exit 70. The checks
+are offline, heuristic, and do not certify WCAG compliance.
 
 ---
 

@@ -4,9 +4,37 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import re
 import sys
 from pathlib import Path
+
+SUPPORTED_RULES = ["layout/viewport-hscreen"]
+UNAVAILABLE_RULES = [
+    "anti-slop/purple-gradient", "motion/layout-thrashing", "a11y/focus-outline",
+    "layout/arbitrary-spacing", "typography/excess-scale",
+]
+UI_EXTENSIONS = {'.tsx', '.jsx', '.html', '.css', '.vue', '.svelte'}
+IGNORED_DIRECTORIES = {'node_modules', 'target', 'dist'}
+
+
+class InvalidAuditTarget(ValueError):
+    pass
+
+
+def partial_metadata() -> dict:
+    return {
+        "engine": "python", "complete": False, "partial": True,
+        "supported_rules": SUPPORTED_RULES, "unavailable_rules": UNAVAILABLE_RULES,
+    }
+
+
+def failed_metadata() -> dict:
+    """No rules completed over the requested target when scanning fails."""
+    return {
+        "engine": "python", "complete": False, "partial": False,
+        "supported_rules": [], "unavailable_rules": SUPPORTED_RULES + UNAVAILABLE_RULES,
+    }
 
 def parse_color(c: str) -> tuple[int, int, int]:
     c = c.strip().lower()
@@ -53,31 +81,36 @@ def audit_path(path_str: str) -> dict:
     violations = []
     files_scanned = 0
     if target.is_file():
-        files = [target]
+        files = [target] if target.suffix in UI_EXTENSIONS else []
     elif target.is_dir():
-        files = list(target.rglob('*'))
+        files = []
+        def fail_walk(error: OSError) -> None:
+            raise error
+        for root, dirs, names in os.walk(target, onerror=fail_walk, followlinks=False):
+            dirs[:] = sorted(d for d in dirs if not d.startswith('.') and d not in IGNORED_DIRECTORIES)
+            files.extend(Path(root) / name for name in sorted(names)
+                         if not name.startswith('.') and Path(name).suffix in UI_EXTENSIONS)
     else:
-        return {"error": f"Path not found: {path_str}"}
+        raise InvalidAuditTarget(f"Path not found or not a readable target: {path_str}")
+
+    if not files:
+        raise InvalidAuditTarget(f"No supported UI files found: {path_str}")
 
     for f in files:
-        if not f.is_file() or f.suffix not in ('.tsx', '.jsx', '.html', '.css', '.vue', '.svelte'):
-            continue
+        content = f.read_text(encoding='utf-8')
         files_scanned += 1
-        try:
-            content = f.read_text(encoding='utf-8', errors='ignore')
-        except Exception:
-            continue
         for line_no, line in enumerate(content.splitlines(), 1):
-            if 'h-screen' in line:
+            if 'h-screen' in line and 'h-dvh' not in line:
                 violations.append({
                     "file": str(f),
                     "line": line_no,
-                    "rule": "viewport-vh-mobile-jump",
-                    "severity": "BLOCK",
-                    "message": "Use h-dvh instead of h-screen to prevent mobile viewport jumping.",
-                    "snippet": line.strip()[:80]
+                    "rule": "layout/viewport-hscreen",
+                    "severity": "FLAG",
+                    "message": "Viewport unit 'h-screen' causes mobile address bar jumping and scroll bugs.",
+                    "snippet": line.strip(),
+                    "fix": "Use 'h-dvh' (dynamic viewport height) or 'min-h-dvh' instead of 'h-screen'.",
                 })
-    return {
+    return {**partial_metadata(),
         "files_scanned": files_scanned,
         "violations_count": len(violations),
         "blocks": len([v for v in violations if v["severity"] == "BLOCK"]),
@@ -96,6 +129,7 @@ def main():
     
     a_parser = sub.add_parser("audit")
     a_parser.add_argument("path")
+    a_parser.add_argument("--partial", action="store_true", help="Run only the h-screen rule (not verification)")
     a_parser.add_argument("--json", action="store_true")
 
     args = p.parse_args()
@@ -103,10 +137,34 @@ def main():
         res = contrast_ratio(args.fg, args.bg)
         print(json.dumps(res, indent=2))
     elif args.cmd == "audit":
-        res = audit_path(args.path)
-        print(json.dumps(res, indent=2))
+        if not args.partial:
+            error = "Comprehensive audit requires the native Rust engine; use uim audit <path> or explicitly request --partial."
+            print(f"uim: {error}", file=sys.stderr)
+            if args.json:
+                print(json.dumps({**failed_metadata(), "error": error}, indent=2))
+            return 69
+        try:
+            res = audit_path(args.path)
+        except InvalidAuditTarget as exc:
+            print(f"uim: {exc}", file=sys.stderr)
+            if args.json:
+                print(json.dumps({**failed_metadata(), "error": str(exc)}, indent=2))
+            return 2
+        except (OSError, UnicodeError) as exc:
+            print(f"uim: audit could not read all files: {exc}", file=sys.stderr)
+            if args.json:
+                print(json.dumps({**failed_metadata(), "error": f"Audit read failed: {exc}"}, indent=2))
+            return 70
+        print("uim: PARTIAL audit only; no comprehensive verification was performed.", file=sys.stderr)
+        if args.json:
+            print(json.dumps(res, indent=2))
+        else:
+            print(f"PARTIAL AUDIT (NOT VERIFIED): {res['files_scanned']} files, {res['violations_count']} findings")
+            for v in res['violations']:
+                print(f"{v['severity']} {v['rule']} {v['file']}:{v['line']} - {v['message']}")
+        return 3
     else:
         p.print_help()
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

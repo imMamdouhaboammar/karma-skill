@@ -183,8 +183,11 @@ karma init-agent --agent <agent> --skill all
 # Calculate WCAG 2.2 AAA/AA relative luminance and contrast ratio (<1ms)
 uim contrast "#0f172a" "#38bdf8" --json
 
-# Scan files for anti-slop violations (h-screen bugs, layout thrashing, typography bloat)
+# Run all six native heuristic rules; exit 0 means scanned, NOT zero findings
 uim audit ./src --json
+
+# Deliberately limited, non-verifying Python-only scan (exit 3)
+uim audit ./src --partial --json
 
 # Audit Chrome Extension (CRX) Manifest V3, Closed Shadow DOM, and popup bounds
 uim crx ./extension --json
@@ -197,8 +200,8 @@ uim mcp
 ```
 
 The `uim` launcher first checks for an independent executable on `PATH` or a
-local compiled Rust engine. Without one, `contrast` and `audit` use the Python
-bridge; `crx`, `skills`, `mcp`, `rig`, `get-skill`, and `trace` run the Rust source
+local compiled Rust engine. Without one, `contrast` uses the Python bridge;
+`audit`, `crx`, `skills`, `mcp`, `rig`, `get-skill`, and `trace` run the Rust source
 through Cargo automatically when it is present. Cargo is invoked with
 `--offline --locked`, so a CLI call does not fetch dependencies. From a full
 source checkout, you can explicitly prepare the engine with:
@@ -207,6 +210,12 @@ source checkout, you can explicitly prepare the engine with:
 cargo build --locked --manifest-path crates/ui-master-engine/Cargo.toml
 ```
 
+For **strict `audit` only**, the launcher checks each candidate executable's
+`audit-contract` capability first. Older binaries that cannot advertise all
+six rules are skipped, and the launcher tries the next native candidate or
+offline Cargo; it never accepts the older zero-count JSON as a verified result.
+The Node/Bun shim sends audits through the same check.
+
 This build may fetch Rust crates; the launcher itself never does. A standalone
 portable skill does not include the Rust source, so native-only commands need
 an independently installed `uim` executable. If the engine or Cargo is missing,
@@ -214,11 +223,32 @@ the launcher reports the prerequisite on stderr and exits nonzero. Native
 `skills` search also needs a locally populated
 `~/.gemini/antigravity/ui-skills-catalog/registry.json`; it is not bundled.
 
-`UIM_CARGO_RUN=1` or `true` selects Cargo for Python-supported commands too
+`UIM_CARGO_RUN=1` or `true` selects Cargo for `contrast` too
 when there is no compiled engine. Unset, `auto`, `0`, and `false` use the default
-capability dispatch. Invalid values are rejected. The Python `audit` fallback
-currently checks only `h-screen` and is **not a comprehensive accessibility
-audit** (tracked in [#5](https://github.com/imMamdouhaboammar/karma-skill/issues/5)).
+capability dispatch. Invalid values are rejected. `audit` is verification-critical:
+without a native binary or usable offline Cargo build, the default command fails
+instead of silently performing a weaker scan. Pass `--partial` to intentionally
+use Python's single `layout/viewport-hscreen` rule even when Rust is available;
+this is **not comprehensive verification**. Its JSON has `engine: "python"`,
+`complete: false`, `partial: true`, `supported_rules` and `unavailable_rules`.
+Zero findings from this result do not mean the UI passed the other five rules.
+Native JSON has `engine: "rust"`, `complete: true`, `partial: false`, all six
+rule IDs in `supported_rules`, and no unavailable rules only after successfully
+reading at least one supported UI file. Native results still represent a small
+heuristic rule set, not WCAG certification.
+
+Failed scans include `complete: false`, `partial: false`, no completed
+`supported_rules`, and an `error` field when JSON output is available.
+
+Audit exit codes: `0` means a complete native scan ran, **with or without
+findings** (inspect `blocks`, `flags`, and `violations_count`); `3` means an
+explicit partial scan ran, also regardless of findings; `2` means invalid input,
+including missing targets, unsupported options and directories without supported
+UI files; `69` means the required runtime is unavailable; `70` means a file or
+directory could not be read. Failures never produce `complete: true` JSON.
+Diagnostics are on stderr. Supported extensions are `.tsx`, `.jsx`, `.html`,
+`.css`, `.vue`, `.svelte`; recursive scans exclude hidden directories,
+`node_modules`, `target`, and `dist`. Normal command execution remains offline.
 `uim mcp` runs a stdio server that waits for protocol requests; it is not
 expected to exit until stdin closes.
 
