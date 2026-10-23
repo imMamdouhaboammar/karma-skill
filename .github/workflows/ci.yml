@@ -50,3 +50,20 @@ jobs:
         run: python -m pip install '.[mcp]'
       - name: Run real MCP client/server tests
         run: KARMA_TEST_STDIO=1 python -m unittest discover -s tests -p 'test_mcp*.py' -v
+
+  ui-master-native:
+    name: UI-Master Rust and launcher smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build generated portable launcher
+        run: python scripts/build_skill.py
+      - name: Check Rust engine
+        run: cargo test --locked --manifest-path crates/ui-master-engine/Cargo.toml
+      - name: Build native engine
+        run: cargo build --locked --manifest-path crates/ui-master-engine/Cargo.toml
+      - name: Exercise real shell launcher and native MCP stdio
+        run: UIM_TEST_RUST=1 PYTHONPATH=src python -m unittest discover -s tests -p 'test_ui_master_native.py' -v
