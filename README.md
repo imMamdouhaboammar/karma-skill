@@ -74,7 +74,7 @@ Ask Karma which curated skills would help me write regression tests for a React 
 Do not install anything. Show me the recommended skills and their guides.
 ```
 
-The MCP tool takes `goal` (required), `agent` (`codex`, `claude-code`, `cursor`, `gemini`, `opencode`, `antigravity`, or `windsurf`), optional `project_signals` such as `framework:react` or `language:python`, and `limit` (1-5, default 3). The client supplies only these tags; KARMA never examines the client workspace. Unknown tasks return an empty shortlist rather than pulling arbitrary third-party skills. ChatGPT's web interface cannot directly launch a local stdio server; use a host that supports local MCP configuration.
+The MCP tool takes `goal` (required), `agent` (`codex`, `claude-code`, `cursor`, `gemini`, `opencode`, `antigravity`, or `windsurf`), optional `project_signals` such as `framework:react` or `language:python`, and `limit` (1-5, default 3). The client supplies only these tags; KARMA never examines the client workspace. Recommendations must match the goal through a signal or keyword before ranking and applying `limit`; project-only matches never consume the shortlist. Unknown tasks return an empty shortlist rather than pulling arbitrary third-party skills. ChatGPT's web interface cannot directly launch a local stdio server; use a host that supports local MCP configuration.
 
 ### Existing standalone skill and CLI
 
