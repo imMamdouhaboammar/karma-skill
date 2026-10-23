@@ -2,7 +2,7 @@
 set -e
 
 SCRIPT_PATH="${BASH_SOURCE[0]}"
-if [[ "$SCRIPT_PATH" != */* ]]; then
+if [[ "$SCRIPT_PATH" != */* && ! -e "$SCRIPT_PATH" ]]; then
   SCRIPT_PATH="$(type -P "$SCRIPT_PATH")"
 fi
 LINK_COUNT=0
@@ -41,10 +41,11 @@ is_own_launcher() {
     [[ -f "$ROOT/bin/ui-master.js" && "$1" -ef "$ROOT/bin/ui-master.js" ]]
 }
 
-EXTERNAL="$(type -P uim || true)"
-if [[ -n "$EXTERNAL" ]] && ! is_own_launcher "$EXTERNAL"; then
-  exec "$EXTERNAL" "$@"
-fi
+while IFS= read -r EXTERNAL; do
+  if [[ -n "$EXTERNAL" ]] && ! is_own_launcher "$EXTERNAL"; then
+    exec "$EXTERNAL" "$@"
+  fi
+done < <(type -aP uim 2>/dev/null || true)
 if [[ -n "${HOME:-}" && -x "$HOME/.bun/bin/uim" ]] && ! is_own_launcher "$HOME/.bun/bin/uim"; then
   exec "$HOME/.bun/bin/uim" "$@"
 fi
