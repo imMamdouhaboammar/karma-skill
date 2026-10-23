@@ -9,6 +9,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { existsSync } from 'node:fs';
+import { constants as osConstants } from 'node:os';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,15 +22,20 @@ const candidates = [
   join(process.env.HOME || '', '.bun/bin/ui-master-engine')
 ];
 
-let targetBin = null;
-for (const cand of candidates) {
-  if (existsSync(cand)) {
-    targetBin = cand;
-    break;
+const args = process.argv.slice(2);
+// Every audit, including strict native audits, must pass the launcher's
+// coverage capability check. Direct Node-to-binary dispatch could use a stale
+// target/debug executable that still reports a false-clean result.
+const auditCommand = args[0] === 'audit';
+let targetBin = auditCommand ? join(__dirname, '../skills/ui-master/scripts/uim') : null;
+if (!auditCommand) {
+  for (const cand of candidates) {
+    if (existsSync(cand)) {
+      targetBin = cand;
+      break;
+    }
   }
 }
-
-let args = process.argv.slice(2);
 let command = targetBin || 'uim';
 
 if (!targetBin) {
@@ -47,6 +53,7 @@ proc.on('error', (err) => {
   process.exit(1);
 });
 
-proc.on('close', (code) => {
-  process.exit(code ?? 0);
+proc.on('close', (code, signal) => {
+  const signalNumber = signal ? osConstants.signals[signal] : undefined;
+  process.exit(code ?? (signalNumber ? 128 + signalNumber : 1));
 });
