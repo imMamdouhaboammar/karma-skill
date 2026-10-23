@@ -45,11 +45,14 @@ class UIMLauncherTests(unittest.TestCase):
         manifest.write_text('[package]\nname = "ui-master-engine"\n')
         return scripts / 'uim'
 
-    def fake_engine(self, path, label='native', code=0):
+    def fake_engine(self, path, label='native', code=0, contracted=False):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(
             '#!' + sys.executable + '\n'
             'import json, sys\n'
+            'if sys.argv[1:3] == ["audit-contract", "--json"]:\n'
+            f'    print(json.dumps({{"audit_contract": {"comprehensive-v1" if contracted else "legacy"!r}, "engine": "rust", "supported_rules": ["anti-slop/purple-gradient", "layout/viewport-hscreen", "motion/layout-thrashing", "a11y/focus-outline", "layout/arbitrary-spacing", "typography/excess-scale"]}}))\n'
+            '    sys.exit(0)\n'
             f'if sys.argv[1:2] == ["mcp"]:\n'
             '    for line in sys.stdin:\n'
             '        request = json.loads(line)\n'
@@ -157,6 +160,139 @@ class UIMLauncherTests(unittest.TestCase):
         self.assertEqual(result.returncode, 69, (result.stdout, result.stderr))
         self.assertNotIn('"violations_count": 0', result.stdout)
         self.assertIn('native Rust engine', result.stderr)
+
+    def test_explicit_partial_audit_discloses_coverage_and_returns_nonzero(self):
+        target = self.root / 'focus with spaces.tsx'
+        target.write_text('<button className="outline-none">Continue</button>\n')
+        result = self.run_uim('audit', str(target), '--partial', '--json')
+        self.assertEqual(result.returncode, 3, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload['engine'], 'python')
+        self.assertIs(payload['complete'], False)
+        self.assertIs(payload['partial'], True)
+        self.assertEqual(payload['supported_rules'], ['layout/viewport-hscreen'])
+        self.assertIn('a11y/focus-outline', payload['unavailable_rules'])
+        self.assertEqual(payload['violations_count'], 0)
+        self.assertIn('PARTIAL', result.stderr)
+
+    def test_partial_hscreen_matches_native_rule_id_and_severity(self):
+        target = self.root / 'viewport.tsx'
+        target.write_text('<div className="h-screen">Content</div>\n')
+        result = self.run_uim('audit', str(target), '--partial', '--json')
+        self.assertEqual(result.returncode, 3, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload['blocks'], 0)
+        self.assertEqual(payload['flags'], 1)
+        violation = payload['violations'][0]
+        self.assertEqual((violation['rule'], violation['severity']), ('layout/viewport-hscreen', 'FLAG'))
+        self.assertEqual(violation['line'], 1)
+        self.assertTrue(violation['fix'])
+
+    def test_partial_with_no_supported_files_is_not_clean(self):
+        target = self.root / 'empty'
+        target.mkdir()
+        (target / 'README.md').write_text('nothing to scan')
+        result = self.run_uim('audit', str(target), '--partial', '--json')
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIs(json.loads(result.stdout)['complete'], False)
+
+    def test_partial_missing_target_is_invalid_input(self):
+        result = self.run_uim('audit', str(self.root / 'missing.tsx'), '--partial', '--json')
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIs(json.loads(result.stdout)['complete'], False)
+
+    def test_default_comprehensive_audit_uses_offline_cargo_when_available(self):
+        self.fake_cargo()
+        result = self.run_uim('audit', 'path with spaces', '--json')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload['engine'], 'cargo')
+        self.assertEqual(payload['args'][:3], ['run', '--offline', '--locked'])
+        self.assertEqual(payload['args'][-3:], ['audit', 'path with spaces', '--json'])
+
+    def test_stale_external_uim_cannot_return_legacy_false_clean(self):
+        old = self.bin / 'uim'
+        old.write_text('#!' + sys.executable + '\nprint(\'{"files_scanned":1,"violations_count":0,"blocks":0,"flags":0,"violations":[]}\')\n')
+        old.chmod(0o755)
+        target = self.root / 'focus.tsx'
+        target.write_text('<button className="outline-none">Continue</button>')
+        result = self.run_uim('audit', str(target), '--json')
+        self.assertEqual(result.returncode, 69, (result.stdout, result.stderr))
+        self.assertNotIn('"violations_count":0', result.stdout)
+        self.assertIn('unverified audit executable', result.stderr)
+
+    def test_stale_local_compiled_engine_is_not_accepted_for_comprehensive_audit(self):
+        native = self.root / 'checkout/crates/ui-master-engine/target/debug/ui-master-engine'
+        self.fake_engine(native, label='stale')
+        target = self.root / 'focus.tsx'
+        target.write_text('<button className="outline-none">Continue</button>')
+        result = self.run_uim('audit', str(target), '--json')
+        self.assertEqual(result.returncode, 69, (result.stdout, result.stderr))
+        self.assertIn('unverified audit executable', result.stderr)
+
+    def test_verified_native_engine_handles_audit_without_python_on_path(self):
+        native = self.root / 'checkout/crates/ui-master-engine/target/debug/ui-master-engine'
+        self.fake_engine(native, contracted=True)
+        (self.bin / 'python3').unlink()
+        result = self.run_uim('audit', 'component.tsx', '--json')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['engine'], 'native')
+
+    def test_partial_is_explicit_even_if_native_engine_exists(self):
+        self.fake_engine(self.root / 'checkout/crates/ui-master-engine/target/debug/ui-master-engine')
+        target = self.root / 'clean.tsx'
+        target.write_text('<div>Clean</div>')
+        result = self.run_uim('audit', str(target), '--partial', '--json')
+        self.assertEqual(result.returncode, 3, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['engine'], 'python')
+
+    def test_portable_partial_audit_has_same_contract(self):
+        portable_launcher = self.install_launcher(PORTABLE, self.root / 'installed')
+        target = self.root / 'viewport.tsx'
+        target.write_text('<div className="h-screen" />')
+        result = self.run_uim('audit', str(target), '--partial', '--json', launcher=portable_launcher)
+        self.assertEqual(result.returncode, 3, result.stderr)
+        self.assertIs(json.loads(result.stdout)['complete'], False)
+
+    def test_direct_python_bridge_refuses_implicit_comprehensive_audit(self):
+        result = subprocess.run(
+            [sys.executable, str(SOURCE / 'bridge.py'), 'audit', str(REPO / 'tests/fixtures/ui_audit/focus.tsx'), '--json'],
+            capture_output=True, text=True, timeout=5,
+        )
+        self.assertEqual(result.returncode, 69)
+        self.assertIs(json.loads(result.stdout)['complete'], False)
+
+    def test_partial_audit_rejects_undecodable_file_instead_of_skipping(self):
+        target = self.root / 'invalid.tsx'
+        target.write_bytes(b'\xff\xfe')
+        result = self.run_uim('audit', str(target), '--partial', '--json')
+        self.assertEqual(result.returncode, 70, result.stderr)
+        self.assertIs(json.loads(result.stdout)['complete'], False)
+        self.assertIn('error', json.loads(result.stdout))
+
+    def test_partial_scan_respects_exclusions_and_stable_order(self):
+        for directory in ('node_modules', '.hidden', 'dist', 'target'):
+            hidden = self.root / directory
+            hidden.mkdir()
+            (hidden / 'skip.tsx').write_text('h-screen')
+        nested = self.root / 'components'
+        nested.mkdir()
+        (nested / 'z.tsx').write_text('h-screen')
+        (nested / 'a.tsx').write_text('h-screen')
+        (self.root / 'notes.md').write_text('h-screen')
+        result = self.run_uim('audit', str(self.root), '--partial', '--json')
+        self.assertEqual(result.returncode, 3, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload['files_scanned'], 2)
+        self.assertEqual([Path(v['file']).name for v in payload['violations']], ['a.tsx', 'z.tsx'])
+
+    def test_path_with_shell_metacharacters_is_passed_as_one_argument(self):
+        target = self.root / 'component;touch dangerous.tsx'
+        target.write_text('h-screen')
+        result = self.run_uim('audit', str(target), '--partial', '--json')
+        self.assertEqual(result.returncode, 3, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['files_scanned'], 1)
+        self.assertFalse((self.root / 'dangerous.tsx').exists())
 
     def test_no_python_bridge_has_direct_diagnostic(self):
         (self.root / 'checkout/skills/ui-master/scripts/bridge.py').unlink()
