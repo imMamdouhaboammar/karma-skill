@@ -64,4 +64,42 @@ describe("KARMA CLI runner via Bun", () => {
     const parsed = JSON.parse(res.stdout);
     expect(parsed.agent).toBe("windsurf");
   });
+
+  it("runs ui-master binary contrast calculation via Bun", () => {
+    const res = spawnSync(
+      "bun",
+      ["bin/ui-master.js", "contrast", "#000000", "#ffffff", "--json"],
+      {
+        cwd: projectRoot,
+        encoding: "utf-8",
+      }
+    );
+    expect(res.status).toBe(0);
+    expect(res.stdout).toContain("21.00:1");
+    expect(res.stdout).toContain("passes_aaa_normal");
+  });
+
+  it("supports initializing ui-master skill in dry-run mode", () => {
+    const res = spawnSync(
+      "bun",
+      [
+        "bin/cli.js",
+        "init-agent",
+        "--project",
+        "examples/react-app",
+        "--agent",
+        "cursor",
+        "--skill",
+        "ui-master",
+        "--dry-run",
+      ],
+      {
+        cwd: projectRoot,
+        encoding: "utf-8",
+      }
+    );
+    expect(res.status).toBe(0);
+    expect(res.stdout).toContain("Install portable skill");
+    expect(res.stdout).toContain("ui-master");
+  });
 });

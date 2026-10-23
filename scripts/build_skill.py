@@ -16,5 +16,10 @@ for a,b in files:
     shutil.copyfile(a, b)
     print(f'packaged {b.relative_to(root)}')
 
+shutil.copytree(root / 'skills' / 'find-karma', portable / 'find-karma', dirs_exist_ok=True)
+# Also keep root portable directory compatible with find-karma
 shutil.copytree(root / 'skills' / 'find-karma', portable, dirs_exist_ok=True)
+if (root / 'skills' / 'ui-master').is_dir():
+    shutil.copytree(root / 'skills' / 'ui-master', portable / 'ui-master', dirs_exist_ok=True)
+    print('packaged ui-master portable skill')
 print('packaged Python wheel portable skill')

@@ -22,7 +22,7 @@ from urllib.request import Request, urlopen
 VERSION = '0.1.0'
 REPO_RE = re.compile(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\Z')
 SKILL_RE = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]*\Z')
-AGENTS = ('codex', 'claude-code', 'cursor', 'gemini', 'opencode', 'antigravity', 'windsurf')
+AGENTS = ('codex', 'claude-code', 'cursor', 'gemini', 'opencode', 'antigravity', 'windsurf', 'vscode', 'copilot')
 AGENT_PATHS = {
     'codex': '.agents/skills/find-karma',
     'claude-code': '.claude/skills/find-karma',
@@ -31,6 +31,19 @@ AGENT_PATHS = {
     'opencode': '.opencode/skills/find-karma',
     'antigravity': '.agent/skills/find-karma',
     'windsurf': '.windsurf/skills/find-karma',
+    'vscode': '.vscode/skills/find-karma',
+    'copilot': '.github/skills/find-karma',
+}
+AGENT_BASE = {
+    'codex': '.agents/skills',
+    'claude-code': '.claude/skills',
+    'cursor': '.cursor/skills',
+    'gemini': '.gemini/skills',
+    'opencode': '.opencode/skills',
+    'antigravity': '.agent/skills',
+    'windsurf': '.windsurf/skills',
+    'vscode': '.vscode/skills',
+    'copilot': '.github/skills',
 }
 SKIP_DIRS = {
     '.git', '.next', '.venv', 'venv', '__pycache__', 'node_modules', 'dist',
@@ -336,18 +349,25 @@ def _print_rec(item: dict[str,Any], n: int) -> None:
     print('   Trust: Source/docs checked, not security or performance certified. Review before use.')
 
 
-def _skill_dir() -> Path:
+def _skill_dir(skill_name: str = 'find-karma') -> Path:
     here=Path(__file__).resolve()
-    # Portable .agents/skills/find-karma/scripts/karma.py
-    if here.parent.name=='scripts' and here.parents[1].name=='find-karma':
+    # If invoked directly from within the target skill's own scripts folder
+    if here.parent.name=='scripts' and here.parents[1].name==skill_name:
         return here.parents[1]
-    # Development checkout, src/karma/runtime.py
-    root=here.parents[2]
-    path=root/'skills'/'find-karma'
-    if path.is_dir(): return path
-    bundled=here.parent/'portable'
+    # Search upwards for repo root containing skills/ or portable/
+    for p in here.parents:
+        cand = p / 'skills' / skill_name
+        if cand.is_dir():
+            return cand
+        cand_portable = p / 'portable' / skill_name
+        if cand_portable.is_dir():
+            return cand_portable
+    bundled=here.parent/'portable'/skill_name
     if bundled.is_dir(): return bundled
-    raise FileNotFoundError('Portable skill source not found; download full source archive')
+    if skill_name == 'find-karma':
+        bundled_root=here.parent/'portable'
+        if bundled_root.is_dir(): return bundled_root
+    raise FileNotFoundError(f'Portable skill source for {skill_name} not found; download full source archive')
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -371,10 +391,22 @@ def make_parser() -> argparse.ArgumentParser:
     i.add_argument('id'); i.add_argument('--agent',choices=AGENTS,required=True)
     i.add_argument('--execute',action='store_true',help='Execute approved skills CLI install')
     i.add_argument('--yes',action='store_true',help='Confirm reviewed external installation')
-    a=sub.add_parser('init-agent',aliases=['init'],help='Copy self-contained find-karma skill into this project')
+    a=sub.add_parser('init-agent',aliases=['init'],help='Copy self-contained find-karma or ui-master skill into this project')
     a.add_argument('--project',default='.')
     a.add_argument('--agent',choices=AGENTS,default='codex')
+    a.add_argument('--skill',choices=('find-karma','ui-master','all'),default='find-karma',help='Skill to install (find-karma, ui-master, all)')
     a.add_argument('--dry-run',action='store_true'); a.add_argument('--force',action='store_true')
+    d=sub.add_parser('doctor',help='Check local tooling and skill package')
+    d.add_argument('--json',action='store_true')
+    v=sub.add_parser('validate',help='Validate bundled catalog and safety constraints')
+    v.add_argument('--json',action='store_true')
+    st=sub.add_parser('sync-stars',help='Opt-in GitHub sync into UNREVIEWED candidates only')
+    st.add_argument('--user',default='imMamdouhaboammar')
+    st.add_argument('--project',default='.')
+    st.add_argument('--max-pages',type=int,default=6)
+    st.add_argument('--output',default=None,help='JSON output path; default .karma/starred-candidates.json')
+    st.add_argument('--json',action='store_true')
+    return p
     d=sub.add_parser('doctor',help='Check local tooling and skill package')
     d.add_argument('--json',action='store_true')
     v=sub.add_parser('validate',help='Validate bundled catalog and safety constraints')
@@ -454,18 +486,25 @@ def main(argv: list[str] | None=None) -> int:
         elif args.command in ('init-agent', 'init'):
             root=Path(args.project).expanduser().resolve(strict=True)
             if not root.is_dir(): raise ValueError('Project root is not a directory')
-            dest=root/AGENT_PATHS[args.agent]
-            # A symlink in a destination parent could escape the selected project.
-            for component in [root/Path(*Path(AGENT_PATHS[args.agent]).parts[:j]) for j in range(1,len(Path(AGENT_PATHS[args.agent]).parts))]:
-                if component.is_symlink(): raise ValueError('Refusing to write through a symlinked agent directory')
-            if dest.resolve()==_skill_dir().resolve(): raise ValueError('Source and destination are the same directory')
-            print(f'Install portable skill: {_skill_dir()} -> {dest}')
-            if not args.dry_run:
-                if dest.exists() and not args.force:
-                    raise ValueError(f'Target exists: {dest} (use --force to replace)')
-                if dest.is_symlink(): raise ValueError('Refusing to overwrite a symlink')
-                shutil.copytree(_skill_dir(),dest,dirs_exist_ok=args.force)
-                print('Installed. Tell the coding agent: FIND KARMA ☯')
+            skills_to_install = ['find-karma', 'ui-master'] if args.skill == 'all' else [args.skill]
+            for sk in skills_to_install:
+                source_dir = _skill_dir(sk)
+                rel_path = f"{AGENT_BASE[args.agent]}/{sk}"
+                dest = root / rel_path
+                # A symlink in a destination parent could escape the selected project.
+                for component in [root/Path(*Path(rel_path).parts[:j]) for j in range(1,len(Path(rel_path).parts))]:
+                    if component.is_symlink(): raise ValueError('Refusing to write through a symlinked agent directory')
+                if dest.resolve() == source_dir.resolve(): raise ValueError('Source and destination are the same directory')
+                print(f'Install portable skill: {source_dir} -> {dest}')
+                if not args.dry_run:
+                    if dest.exists() and not args.force:
+                        raise ValueError(f'Target exists: {dest} (use --force to replace)')
+                    if dest.is_symlink(): raise ValueError('Refusing to overwrite a symlink')
+                    shutil.copytree(source_dir, dest, dirs_exist_ok=args.force)
+                    if sk == 'find-karma':
+                        print('Installed. Tell the coding agent: FIND KARMA ☯')
+                    else:
+                        print(f'Installed. Tell the coding agent: /ui-master ({sk})')
         elif args.command=='doctor':
             data={'python':sys.version.split()[0], 'npx':shutil.which('npx'),
                   'catalog':str(catalog_path()),'records':len(records),

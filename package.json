@@ -6,7 +6,9 @@
   "main": "bin/cli.js",
   "bin": {
     "karma": "./bin/cli.js",
-    "find-karma": "./bin/cli.js"
+    "find-karma": "./bin/cli.js",
+    "ui-master": "./bin/ui-master.js",
+    "uim": "./bin/ui-master.js"
   },
   "repository": {
     "type": "git",
@@ -15,6 +17,7 @@
   "files": [
     "bin",
     "catalog",
+    "crates",
     "skills",
     "src",
     "SKILL.md",

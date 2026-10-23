@@ -385,6 +385,43 @@
       }
     },
     {
+      "id": "ui-master",
+      "name": "UI-Master Engineering Suite",
+      "source": "https://github.com/imMamdouhaboammar/karma-skill",
+      "kind": "tool",
+      "lane": "frontend-quality",
+      "summary": "Elite UI/UX/CRX design engineering agent, 421 ui-skills catalog, Rig Rust engine, and anti-slop gates.",
+      "benefit": "Eliminates UI slop, enforces WCAG 2.2 AAA/AA contrast, validates Chrome Extension MV3 isolation, and orchestrates multi-agent design reviews.",
+      "signals": [
+        "task:frontend",
+        "task:design",
+        "task:quality",
+        "task:browser",
+        "task:review"
+      ],
+      "tags": [
+        "ui-master",
+        "uim",
+        "contrast",
+        "accessibility",
+        "wcag",
+        "crx",
+        "anti-slop",
+        "rig",
+        "rust",
+        "extension"
+      ],
+      "status": "reviewed",
+      "provenance": "curated",
+      "evidence": "https://github.com/imMamdouhaboammar/karma-skill#readme",
+      "review_note": "First-class bundled agent and native verification suite.",
+      "install": {
+        "method": "skills",
+        "repo": "imMamdouhaboammar/karma-skill",
+        "skill": "ui-master"
+      }
+    },
+    {
       "id": "ui-skills",
       "name": "UI Skills",
       "source": "https://github.com/ibelick/ui-skills",

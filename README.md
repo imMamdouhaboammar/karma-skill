@@ -107,9 +107,44 @@ KARMA ships with first-class adapter manifests and profiles for the entire AI ag
 | **Gemini CLI** | `.gemini/skills/find-karma` | `~/.gemini/config/skills/` | CLI skill load |
 | **Windsurf** | `.windsurf/skills/find-karma` | `SKILL.md` & workspace rules | Cascading skill |
 | **OpenCode** | `.opencode/skills/find-karma` | `skills/find-karma/` | Native skill registry |
+| **VS Code (Cline / Roo)** | `.vscode/skills/find-karma` | `.vscode/mcp.json` | Native MCP / Task |
+| **GitHub Copilot** | `.github/skills/find-karma` | `.github/copilot-instructions.md` | Contextual instructions |
 | **Skills.sh (Vercel)** | Root registry | `.skills.json` | `npx skills add <repo>` |
 | **npm / Bun CLI** | Global / Local binary | `package.json` (`bin/cli.js`) | `bunx find-karma` / `karma` |
 | **Python Package** | Virtualenv / pip | `pyproject.toml` | `pip install .` (`karma`) |
+
+---
+
+## 🎨 UI-Master Module (Design Engineering & Rust Rig Engine)
+
+KARMA bundles `@ui-master`, an elite design engineering agent weaponized with the 421 `ui-skills` catalog, native Rust Rig AI tools (`rig-core`), and Model Context Protocol (MCP) server.
+
+### 1. Initialize UI-Master for Any Agent
+```bash
+# Install UI-Master into your active agent workspace
+karma init-agent --agent <antigravity|claude-code|cursor|vscode|copilot|codex|windsurf|opencode> --skill ui-master
+
+# Or install both KARMA discovery and UI-Master together:
+karma init-agent --agent <agent> --skill all
+```
+
+### 2. Deterministic Verification Gates (Native Rust `uim` Engine)
+```bash
+# Calculate WCAG 2.2 AAA/AA relative luminance and contrast ratio (<1ms)
+uim contrast "#0f172a" "#38bdf8" --json
+
+# Scan files for anti-slop violations (h-screen bugs, layout thrashing, typography bloat)
+uim audit ./src --json
+
+# Audit Chrome Extension (CRX) Manifest V3, Closed Shadow DOM, and popup bounds
+uim crx ./extension --json
+
+# Sub-millisecond BM25 keyword search across 421 design engineering skills
+uim skills "micro-interactions motion" --json
+
+# MCP Server mode (Stdio JSON-RPC 2.0 with inputSchema for VS Code / Claude / Cursor)
+uim mcp
+```
 
 ---
 

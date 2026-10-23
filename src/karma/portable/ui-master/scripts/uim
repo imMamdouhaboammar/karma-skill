@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$DIR/../../.." && pwd)"
+
+# 1. Prefer compiled local/global binary
+if command -v uim >/dev/null 2>&1; then
+  exec uim "$@"
+elif [ -f "$HOME/.bun/bin/uim" ]; then
+  exec "$HOME/.bun/bin/uim" "$@"
+elif [ -f "$ROOT/crates/ui-master-engine/target/release/ui-master-engine" ]; then
+  exec "$ROOT/crates/ui-master-engine/target/release/ui-master-engine" "$@"
+elif [ -f "$ROOT/crates/ui-master-engine/target/debug/ui-master-engine" ]; then
+  exec "$ROOT/crates/ui-master-engine/target/debug/ui-master-engine" "$@"
+elif command -v cargo >/dev/null 2>&1 && [ -f "$ROOT/crates/ui-master-engine/Cargo.toml" ]; then
+  exec cargo run --quiet --manifest-path "$ROOT/crates/ui-master-engine/Cargo.toml" -- "$@"
+else
+  # 2. Fallback to Python bridge
+  exec python3 "$DIR/bridge.py" "$@"
+fi

@@ -1,0 +1,19 @@
+[package]
+name = "ui-master-engine"
+version = "0.2.0"
+edition = "2021"
+authors = ["Antigravity <agents@antigravity.ai>"]
+description = "High-performance Rust + Rig engine for UI-Master Agent: anti-slop linter, WCAG contrast engine, CRX validator, BM25 skill search, Rig agent tools, and multi-agent trace ledger."
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+rig-core = "0.46.0-rc.1"
+tokio = { version = "1.43", features = ["full"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

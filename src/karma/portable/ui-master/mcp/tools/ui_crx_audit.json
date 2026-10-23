@@ -1,0 +1,1 @@
+{"name":"ui_crx_audit","description":"Audits Chrome Extensions for Manifest V3, Closed Shadow DOM encapsulation, and popup geometry.","parameters":{"properties":{"dir":{"description":"Directory containing manifest.json","type":"string"}},"required":["dir"],"type":"object"}}

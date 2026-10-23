@@ -225,6 +225,33 @@ class KarmaTests(unittest.TestCase):
         devops_signs = runtime._goal_signals('multi-stage docker container deploy')
         self.assertIn('task:devops', devops_signs)
 
+    def test_init_agent_supports_ui_master(self):
+        rc = runtime.main(['init-agent', '--project', str(self.root), '--agent', 'claude-code', '--skill', 'ui-master'])
+        self.assertEqual(rc, 0)
+        self.assertTrue((self.root / '.claude/skills/ui-master/SKILL.md').exists())
+        self.assertTrue((self.root / '.claude/skills/ui-master/agents/claude-code.md').exists())
+        self.assertTrue((self.root / '.claude/skills/ui-master/scripts/bridge.py').exists())
+
+    def test_init_agent_supports_vscode_and_copilot(self):
+        rc1 = runtime.main(['init-agent', '--project', str(self.root), '--agent', 'vscode', '--skill', 'ui-master'])
+        self.assertEqual(rc1, 0)
+        self.assertTrue((self.root / '.vscode/skills/ui-master/SKILL.md').exists())
+
+        rc2 = runtime.main(['init-agent', '--project', str(self.root), '--agent', 'copilot', '--skill', 'ui-master'])
+        self.assertEqual(rc2, 0)
+        self.assertTrue((self.root / '.github/skills/ui-master/SKILL.md').exists())
+
+    def test_init_agent_all_installs_both_skills(self):
+        rc = runtime.main(['init-agent', '--project', str(self.root), '--agent', 'antigravity', '--skill', 'all'])
+        self.assertEqual(rc, 0)
+        self.assertTrue((self.root / '.agent/skills/find-karma/SKILL.md').exists())
+        self.assertTrue((self.root / '.agent/skills/ui-master/SKILL.md').exists())
+
+    def test_find_recommends_ui_master_for_crx_and_wcag(self):
+        recs = runtime.find(runtime.load_catalog(), set(), goal='Chrome Extension popup WCAG contrast audit and anti-slop', limit=5)
+        ids = [x['id'] for x in recs]
+        self.assertIn('ui-master', ids)
+
 
 if __name__=='__main__':
     unittest.main()

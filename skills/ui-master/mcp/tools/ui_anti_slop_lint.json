@@ -1,0 +1,1 @@
+{"name":"ui_anti_slop_lint","description":"Scans UI files for anti-slop violations, h-screen bugs, layout thrashing, and typography bloat.","parameters":{"properties":{"path":{"description":"Path to file or directory to scan","type":"string"}},"required":["path"],"type":"object"}}

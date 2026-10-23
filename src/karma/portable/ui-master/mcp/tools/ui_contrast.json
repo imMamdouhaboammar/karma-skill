@@ -1,0 +1,1 @@
+{"name":"ui_contrast","description":"Calculates exact WCAG 2.2 color contrast ratio and verifies AA/AAA compliance.","parameters":{"properties":{"bg":{"description":"Background color in hex (#fff, #0f172a) or rgb(r, g, b)","type":"string"},"fg":{"description":"Foreground color in hex (#fff, #0f172a) or rgb(r, g, b)","type":"string"}},"required":["fg","bg"],"type":"object"}}

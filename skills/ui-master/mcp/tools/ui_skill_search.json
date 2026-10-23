@@ -1,0 +1,1 @@
+{"name":"ui_skill_search","description":"Sub-millisecond BM25 search across 421 design engineering skills in ui-skills.","parameters":{"properties":{"limit":{"description":"Maximum hits to return (default 10)","type":"number"},"query":{"description":"Search keyword or topic","type":"string"}},"required":["query"],"type":"object"}}
