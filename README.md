@@ -2,7 +2,7 @@
 
 # ☯ KARMA
 
-### The Skill for Skills: Offline-First Contextual Discovery of Curated AI Agent Capabilities
+### Ask Karma. Get a short list of agent skills worth considering.
 **Fit Over Fame • Zero Telemetry • Human Approval First • Multi-Agent Ready**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
@@ -27,6 +27,56 @@
 ---
 
 ## ⚡ Overview
+
+Most skill finders answer a narrow coding task with an enormous marketplace. KARMA gives a coding agent **a small, explainable shortlist from a maintained catalog** instead.
+
+The new **KARMA MCP advisor** is intentionally limited to two read-only tools:
+
+1. `recommend_skills`: describe the task and optionally send non-sensitive stack tags; get up to five matching reviewed entries, reasons, sources and installation guides.
+2. `get_skill_guide`: request the guide for one reviewed entry by ID.
+
+**That's the full MCP contract.** It does not install, fetch, rank by GitHub stars, read your project's files or execute commands. The agent still needs your approval before acting on any returned installation command. The shipped catalog currently has 45 reviewed entries and 15 candidates that MCP never recommends. `reviewed` means documentation or structure was inspected, not a guarantee of security or performance.
+
+### Connect an MCP client (new)
+
+The MCP server uses **stdio**, so the agent host launches a local `karma-mcp` process. Python 3.11+ is required for the optional MCP SDK; the existing Python 3.10+ CLI stays dependency-free.
+
+From a local checkout of this PR:
+
+```bash
+python3 -m pip install '.[mcp]'
+karma-mcp
+```
+
+`karma-mcp` waits for MCP messages on stdin and writes protocol responses to stdout. It is not an interactive shell command. After this feature is published to PyPI, the installation command will be `pip install 'find-karma[mcp]'`.
+
+OpenAI Codex `config.toml`:
+
+```toml
+[mcp_servers.karma]
+command = "karma-mcp"
+```
+
+Claude Desktop or another host that supports stdio MCP server configuration:
+
+```json
+{
+  "mcpServers": {
+    "karma": { "command": "karma-mcp" }
+  }
+}
+```
+
+Then ask the agent:
+
+```text
+Ask Karma which curated skills would help me write regression tests for a React app.
+Do not install anything. Show me the recommended skills and their guides.
+```
+
+The MCP tool takes `goal` (required), `agent` (`codex`, `claude-code`, `cursor`, `gemini`, `opencode`, `antigravity`, or `windsurf`), optional `project_signals` such as `framework:react` or `language:python`, and `limit` (1-5, default 3). The client supplies only these tags; KARMA never examines the client workspace. Unknown tasks return an empty shortlist rather than pulling arbitrary third-party skills. ChatGPT's web interface cannot directly launch a local stdio server; use a host that supports local MCP configuration.
+
+### Existing standalone skill and CLI
 
 Give your coding agent the prompt:
 
@@ -152,29 +202,16 @@ uim mcp
 
 ```mermaid
 flowchart TD
-    UserPrompt["User Prompt: FIND KARMA ☯"] --> Dispatcher["KARMA Dispatcher Engine"]
-
-    subgraph Analysis ["Local Metadata Inspection"]
-        Dispatcher --> Fingerprint["Project Fingerprint: Filenames & Manifests only"]
-        Dispatcher --> GoalTokens["Goal Token Extraction: Keywords & Intent"]
-        Dispatcher --> HostDetect["Agent Host Detection"]
-    end
-
-    subgraph CatalogEngine ["Curated Offline Knowledge"]
-        CuratedDB[("Curated Catalog: 36 Reviewed Skills")] --> Filter["Deterministic Matcher & Lane De-duplicator"]
-        Fingerprint --> Filter
-        GoalTokens --> Filter
-        HostDetect --> Filter
-    end
-
-    subgraph Recommendation ["Safe Recommendation Output"]
-        Filter --> TopK["Top 2-5 Recommendations with 'Why Now' Evidence"]
-        TopK --> Preview["Installation Dry-Run Command Preview"]
-        Preview --> Approval{"Explicit User Approval?"}
-        Approval -->|"No"| SafeStop["Preserve User Control & Exit"]
-        Approval -->|"Yes: --execute --yes"| Execute["Run External Tool with Specific Permission"]
-    end
+    Agent["Agent task + optional stack tags"] --> MCP["Read-only MCP tools"]
+    CLI["CLI find --project"] --> Scan["Local metadata inspection"]
+    MCP --> Catalog[("Reviewed catalog entries")]
+    Scan --> Catalog
+    Catalog --> Rank["Deterministic matcher"]
+    Rank --> Guides["1-5 recommendations and guides"]
+    Guides --> User["Agent presents choices to user"]
 ```
+
+Only the standalone CLI offers a separate, explicitly approved `install --execute --yes` command. There is no corresponding MCP installation tool.
 
 ---
 

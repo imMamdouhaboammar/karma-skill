@@ -37,3 +37,16 @@ jobs:
         run: bun run bin/cli.js doctor
       - name: Verify Universal Installer Dry-Run
         run: ./install.sh --dry-run
+
+  mcp-protocol:
+    name: MCP stdio protocol (Python 3.12)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install optional official SDK
+        run: python -m pip install '.[mcp]'
+      - name: Run real MCP client/server tests
+        run: KARMA_TEST_STDIO=1 python -m unittest discover -s tests -p 'test_mcp*.py' -v

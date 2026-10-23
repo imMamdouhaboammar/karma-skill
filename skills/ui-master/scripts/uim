@@ -13,9 +13,9 @@ elif [ -f "$ROOT/crates/ui-master-engine/target/release/ui-master-engine" ]; the
   exec "$ROOT/crates/ui-master-engine/target/release/ui-master-engine" "$@"
 elif [ -f "$ROOT/crates/ui-master-engine/target/debug/ui-master-engine" ]; then
   exec "$ROOT/crates/ui-master-engine/target/debug/ui-master-engine" "$@"
-elif command -v cargo >/dev/null 2>&1 && [ -f "$ROOT/crates/ui-master-engine/Cargo.toml" ]; then
+elif [ -n "$UIM_CARGO_RUN" ] && command -v cargo >/dev/null 2>&1 && [ -f "$ROOT/crates/ui-master-engine/Cargo.toml" ]; then
   exec cargo run --quiet --manifest-path "$ROOT/crates/ui-master-engine/Cargo.toml" -- "$@"
 else
-  # 2. Fallback to Python bridge
+  # 2. Instant offline Python bridge (<20ms)
   exec python3 "$DIR/bridge.py" "$@"
 fi
