@@ -260,6 +260,8 @@ class UIMLauncherTests(unittest.TestCase):
         result = self.run_uim('crx', '.', '--json', launcher=portable_launcher)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('crx', result.stderr)
+        self.assertIn('requires the native Rust engine', result.stderr)
+        self.assertIn('Cargo manifest is not bundled', result.stderr)
         self.assertNotIn('invalid choice', result.stderr)
 
     def test_portable_install_uses_independent_external_binary(self):

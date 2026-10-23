@@ -69,6 +69,12 @@ class UIMNativeSmokeTests(unittest.TestCase):
         self.assertEqual(response['id'], 41)
         self.assertEqual(response['result']['serverInfo']['name'], 'ui-master-rig')
 
+    def test_native_help_lists_mcp_mode(self):
+        result = self.run_uim('--help')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('mcp', result.stdout)
+        self.assertIn('stdio', result.stdout)
+
     def test_portable_launcher_finds_installed_native_engine(self):
         binary = self.root / 'bin/uim'
         binary.parent.mkdir()
