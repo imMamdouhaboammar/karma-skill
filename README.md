@@ -196,6 +196,32 @@ uim skills "micro-interactions motion" --json
 uim mcp
 ```
 
+The `uim` launcher first checks for an independent executable on `PATH` or a
+local compiled Rust engine. Without one, `contrast` and `audit` use the Python
+bridge; `crx`, `skills`, `mcp`, `rig`, `get-skill`, and `trace` run the Rust source
+through Cargo automatically when it is present. Cargo is invoked with
+`--offline --locked`, so a CLI call does not fetch dependencies. From a full
+source checkout, you can explicitly prepare the engine with:
+
+```bash
+cargo build --locked --manifest-path crates/ui-master-engine/Cargo.toml
+```
+
+This build may fetch Rust crates; the launcher itself never does. A standalone
+portable skill does not include the Rust source, so native-only commands need
+an independently installed `uim` executable. If the engine or Cargo is missing,
+the launcher reports the prerequisite on stderr and exits nonzero. Native
+`skills` search also needs a locally populated
+`~/.gemini/antigravity/ui-skills-catalog/registry.json`; it is not bundled.
+
+`UIM_CARGO_RUN=1` or `true` selects Cargo for Python-supported commands too
+when there is no compiled engine. Unset, `auto`, `0`, and `false` use the default
+capability dispatch. Invalid values are rejected. The Python `audit` fallback
+currently checks only `h-screen` and is **not a comprehensive accessibility
+audit** (tracked in [#5](https://github.com/imMamdouhaboammar/karma-skill/issues/5)).
+`uim mcp` runs a stdio server that waits for protocol requests; it is not
+expected to exit until stdin closes.
+
 ---
 
 ## 🏗️ Architecture
