@@ -7,7 +7,7 @@ import sys
 import unittest
 from unittest.mock import patch
 
-from karma import mcp_service
+from karma import mcp_service, runtime
 
 
 @asynccontextmanager
@@ -29,6 +29,46 @@ async def async_timeout(seconds: float):
 
 
 class MCPRecommendationTests(unittest.TestCase):
+    @staticmethod
+    def _relevance_conflict_catalog(same_lane=False):
+        """A strong project-only scorer ahead of a genuine keyword match."""
+        records = runtime.load_catalog()
+        project_only = next(x for x in records if x['id'] == 'matt-tdd').copy()
+        relevant = next(x for x in records if x['id'] == 'ui-master').copy()
+        project_only.update(
+            signals=['task:testing', 'task:review', 'language:typescript'],
+            tags=[],
+        )
+        relevant.update(signals=['task:frontend'], tags=['wcag', 'accessibility'])
+        if same_lane:
+            project_only['lane'] = relevant['lane']
+        return [project_only, relevant]
+
+    def test_keyword_only_mcp_matches_are_filtered_before_limit(self):
+        signals = ['task:frontend', 'task:testing', 'task:review', 'language:typescript']
+        with patch('karma.mcp_service._catalog', return_value=self._relevance_conflict_catalog()):
+            for limit in (1, 2, 3):
+                with self.subTest(limit=limit):
+                    result = mcp_service.recommend_skills(
+                        'wcag accessibility', project_signals=signals, limit=limit,
+                    )
+                    self.assertEqual([r['id'] for r in result['recommendations']], ['ui-master'])
+                    self.assertTrue(any(reason.startswith('Keywords:') for reason in
+                                        result['recommendations'][0]['why']))
+            # Extra stack tags cannot erase a goal-relevant match.
+            without_tags = mcp_service.recommend_skills('wcag accessibility', limit=1)
+            self.assertEqual([r['id'] for r in without_tags['recommendations']], ['ui-master'])
+
+    def test_project_only_match_cannot_reserve_goal_relevant_lane(self):
+        with patch('karma.mcp_service._catalog',
+                   return_value=self._relevance_conflict_catalog(same_lane=True)):
+            result = mcp_service.recommend_skills(
+                'wcag accessibility',
+                project_signals=['task:frontend', 'task:testing', 'task:review', 'language:typescript'],
+                limit=5,
+            )
+        self.assertEqual([r['id'] for r in result['recommendations']], ['ui-master'])
+
     def test_reviewed_guide_binds_source_content_to_immutable_revision(self):
         guide = mcp_service.get_skill_guide('matt-tdd', agent='codex')
         self.assertRegex(guide['reviewed_revision'], r'^[0-9a-f]{40}$')
