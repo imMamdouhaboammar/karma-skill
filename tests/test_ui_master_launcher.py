@@ -225,6 +225,26 @@ class UIMLauncherTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)['ratio'], 21.0)
 
+    def test_bash_invocation_from_script_directory_uses_local_launcher(self):
+        result = subprocess.run(
+            ['/bin/bash', 'uim', 'contrast', '#fff', '#000', '--json'],
+            cwd=self.launcher.parent, env=self.env,
+            text=True, capture_output=True, timeout=5,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['ratio'], 21.0)
+
+    def test_self_first_on_path_does_not_hide_later_native_engine(self):
+        (self.bin / 'uim').symlink_to(self.launcher)
+        native_bin = self.root / 'independent engine'
+        self.fake_engine(native_bin / 'uim', label='later-native')
+        result = self.run_uim(
+            'skills', 'motion',
+            extra_env={'PATH': str(self.bin) + os.pathsep + str(native_bin)},
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['engine'], 'later-native')
+
     def test_launcher_invoked_through_symlink_resolves_its_own_resources(self):
         alias = self.bin / 'uim'
         alias.symlink_to(self.launcher)
