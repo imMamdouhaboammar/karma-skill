@@ -66,4 +66,12 @@ karma = [
     "portable/references/*.md",
     "portable/agents/*.md",
     "portable/examples/*.md",
+    "portable/ui-master/SKILL.md",
+    "portable/ui-master/scripts/*",
+    "portable/ui-master/assets/*.json",
+    "portable/ui-master/agents/*.md",
+    "portable/ui-master/subagents/*.md",
+    "portable/ui-master/mcp/*.json",
+    "portable/ui-master/mcp/tools/*.json",
+    "portable/ui-master/mcp/tools/*.md",
 ]
