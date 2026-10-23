@@ -4,11 +4,30 @@ Run with the official SDK installed: pip install '.[mcp]'.
 """
 
 import asyncio
+from contextlib import asynccontextmanager
 import importlib.util
 import os
 from pathlib import Path
 import sys
 import unittest
+
+
+@asynccontextmanager
+async def async_timeout(seconds: float):
+    if sys.version_info >= (3, 11):
+        async with asyncio.timeout(seconds):
+            yield
+    else:
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + seconds
+        task = asyncio.current_task()
+        handle = loop.call_at(deadline, task.cancel)
+        try:
+            yield
+        except asyncio.CancelledError:
+            raise TimeoutError() from None
+        finally:
+            handle.cancel()
 
 
 @unittest.skipUnless(
@@ -25,7 +44,7 @@ class MCPStdioTransportTests(unittest.IsolatedAsyncioTestCase):
             command=sys.executable, args=['-m', 'karma.mcp_server'], env=env,
         )
 
-        async with asyncio.timeout(15):
+        async with async_timeout(15):
             async with Client(server, read_timeout_seconds=8) as client:
                 listed = await client.list_tools()
                 self.assertEqual(

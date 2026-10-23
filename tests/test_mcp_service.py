@@ -1,11 +1,31 @@
 """Contract tests for Karma's read-only MCP recommendation surface."""
 
 import asyncio
+from contextlib import asynccontextmanager
 import importlib.util
+import sys
 import unittest
 from unittest.mock import patch
 
 from karma import mcp_service
+
+
+@asynccontextmanager
+async def async_timeout(seconds: float):
+    if sys.version_info >= (3, 11):
+        async with asyncio.timeout(seconds):
+            yield
+    else:
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + seconds
+        task = asyncio.current_task()
+        handle = loop.call_at(deadline, task.cancel)
+        try:
+            yield
+        except asyncio.CancelledError:
+            raise TimeoutError() from None
+        finally:
+            handle.cancel()
 
 
 class MCPRecommendationTests(unittest.TestCase):
@@ -22,6 +42,9 @@ class MCPRecommendationTests(unittest.TestCase):
         for item in result['recommendations']:
             self.assertEqual(item['status'], 'reviewed')
             self.assertTrue(item['why'])
+            # Ensure caller-supplied project signals are labeled as caller tags, not workspace scans
+            self.assertFalse(any(r.startswith('Repository:') for r in item['why']))
+            self.assertTrue(any(r.startswith('Caller stack signals:') for r in item['why']))
             self.assertTrue(item['installation_guide'])
             self.assertTrue(item['source'].startswith('https://github.com/'))
         self.assertFalse(result['installed'])
@@ -32,6 +55,11 @@ class MCPRecommendationTests(unittest.TestCase):
         with patch('karma.runtime.detect_project', side_effect=AssertionError('project scan attempted')):
             result = mcp_service.recommend_skills('testing TDD', agent='codex')
         self.assertTrue(result['recommendations'])
+
+    def test_goal_matching_catalog_tags_returns_recommendations(self):
+        result = mcp_service.recommend_skills('portfolio interview design', agent='codex', limit=3)
+        self.assertTrue(result['recommendations'])
+        self.assertIn('portfolio', result['recommendations'][0]['id'])
 
     def test_get_guide_is_curated_only_and_never_installs(self):
         guide = mcp_service.get_skill_guide('matt-tdd', agent='codex')
@@ -67,6 +95,9 @@ class MCPRecommendationTests(unittest.TestCase):
             mcp_service.get_skill_guide('claude-plugin-review', agent='codex')
         with self.assertRaises(ValueError):
             mcp_service.get_skill_guide('matt-tdd', agent='evil-agent')
+        # Explicitly verify candidate skills are rejected
+        with self.assertRaisesRegex(ValueError, 'reviewed'):
+            mcp_service.get_skill_guide('security-audit', agent='codex')
 
 
 @unittest.skipUnless(importlib.util.find_spec('mcp'), 'Install optional MCP SDK to run protocol integration tests')
@@ -75,7 +106,7 @@ class MCPProtocolTests(unittest.IsolatedAsyncioTestCase):
         from mcp import Client
         from karma.mcp_server import create_server
 
-        async with asyncio.timeout(8):
+        async with async_timeout(8):
             async with Client(create_server()) as client:
                 exposed = await client.list_tools()
                 self.assertEqual({tool.name for tool in exposed.tools}, {'recommend_skills', 'get_skill_guide'})
@@ -92,7 +123,7 @@ class MCPProtocolTests(unittest.IsolatedAsyncioTestCase):
         from mcp import Client
         from karma.mcp_server import create_server
 
-        async with asyncio.timeout(8):
+        async with async_timeout(8):
             async with Client(create_server()) as client:
                 response = await client.call_tool('get_skill_guide', {'skill_id': 'unreviewed-id'})
                 self.assertTrue(response.is_error)
@@ -101,7 +132,7 @@ class MCPProtocolTests(unittest.IsolatedAsyncioTestCase):
         from mcp import Client
         from karma.mcp_server import create_server
 
-        async with asyncio.timeout(8):
+        async with async_timeout(8):
             async with Client(create_server(), mode='legacy') as client:
                 self.assertTrue(client.protocol_version.startswith('2025-'))
                 result = await client.call_tool('get_skill_guide', {'skill_id': 'matt-tdd'})

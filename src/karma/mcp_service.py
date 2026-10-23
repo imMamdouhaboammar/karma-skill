@@ -48,13 +48,18 @@ def recommend_skills(goal: str, agent: str = 'codex',
     if any(not isinstance(signal, str) or signal not in allowed for signal in project_signals):
         raise ValueError('Unknown project signal; use tags from the curated catalog')
 
-    # Stack compatibility alone is not evidence that a skill solves the task.
-    matched = (runtime.find(entries, set(project_signals), goal=goal, agent=agent, limit=limit)
-               if runtime._goal_signals(goal) else [])
+    # Stack compatibility alone is not evidence that a skill solves the task:
+    # Run the deterministic matcher and ensure matches align with the goal itself (signals or keywords).
+    raw_matched = runtime.find(entries, set(project_signals), goal=goal, agent=agent, limit=limit)
+    matched = [
+        item for item in raw_matched
+        if not goal.strip() or any(r.startswith(('Goal:', 'Keywords:')) for r in item.get('why', []))
+    ]
     shortlist = [{
         'id': item['id'], 'name': item['name'], 'kind': item['kind'],
         'lane': item['lane'], 'status': item['status'], 'benefit': item['benefit'],
-        'why': item['why'], 'source': item['source'],
+        'why': [r.replace('Repository:', 'Caller stack signals:') for r in item.get('why', [])],
+        'source': item['source'],
         'installation_guide': item['install'],
     } for item in matched]
     return {
