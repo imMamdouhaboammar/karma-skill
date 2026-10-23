@@ -26,6 +26,7 @@ class UIMLauncherTests(unittest.TestCase):
         # Only commands required by the launcher are visible. In particular,
         # a machine's installed Cargo or global uim cannot influence the tests.
         (self.bin / 'dirname').symlink_to(shutil.which('dirname'))
+        (self.bin / 'readlink').symlink_to(shutil.which('readlink'))
         (self.bin / 'bash').symlink_to('/bin/bash')
         (self.bin / 'python3').symlink_to(sys.executable)
         self.env = {**os.environ, 'PATH': str(self.bin)}
@@ -208,9 +209,26 @@ class UIMLauncherTests(unittest.TestCase):
         self.assertIn('unknown command', result.stderr)
         self.assertEqual(result.stdout, '')
 
+    def test_launcher_help_lists_every_supported_command(self):
+        for argv in ((), ('help',), ('--help',), ('-h',)):
+            with self.subTest(argv=argv):
+                result = self.run_uim(*argv)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                for command in ('contrast', 'audit', 'crx', 'skills', 'mcp',
+                                'rig', 'get-skill', 'trace'):
+                    self.assertIn(command, result.stdout)
+                self.assertNotIn('invalid choice', result.stderr)
+
     def test_self_on_path_does_not_recurse(self):
         (self.bin / 'uim').symlink_to(self.launcher)
         result = self.run_uim('contrast', '#fff', '#000', '--json')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['ratio'], 21.0)
+
+    def test_launcher_invoked_through_symlink_resolves_its_own_resources(self):
+        alias = self.bin / 'uim'
+        alias.symlink_to(self.launcher)
+        result = self.run_uim('contrast', '#fff', '#000', '--json', launcher=alias)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)['ratio'], 21.0)
 

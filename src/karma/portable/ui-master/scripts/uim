@@ -1,7 +1,26 @@
 #!/usr/bin/env bash
 set -e
 
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+if [[ "$SCRIPT_PATH" != */* ]]; then
+  SCRIPT_PATH="$(type -P "$SCRIPT_PATH")"
+fi
+LINK_COUNT=0
+while [[ -L "$SCRIPT_PATH" ]]; do
+  ((LINK_COUNT += 1))
+  if (( LINK_COUNT > 20 )); then
+    echo "uim: too many launcher symlink redirects." >&2
+    exit 69
+  fi
+  LINK_DIR="$(cd -P "$(dirname "$SCRIPT_PATH")" && pwd)"
+  LINK_TARGET="$(readlink "$SCRIPT_PATH")"
+  if [[ "$LINK_TARGET" == /* ]]; then
+    SCRIPT_PATH="$LINK_TARGET"
+  else
+    SCRIPT_PATH="$LINK_DIR/$LINK_TARGET"
+  fi
+done
+DIR="$(cd -P "$(dirname "$SCRIPT_PATH")" && pwd)"
 ROOT="$(cd "$DIR/../../.." && pwd)"
 MANIFEST="$ROOT/crates/ui-master-engine/Cargo.toml"
 COMMAND="${1:-}"
@@ -37,7 +56,23 @@ for ENGINE in "$ROOT/crates/ui-master-engine/target/release/ui-master-engine" \
 done
 
 case "$COMMAND" in
-  ''|contrast|audit|-h|--help|help) BRIDGE_SUPPORTED=1 ;;
+  ''|help|-h|--help)
+    printf '%s\n' \
+      'Usage: uim <command> [arguments]' \
+      '  contrast <fg> <bg> [--json]  Color contrast (Python or Rust)' \
+      '  audit <path> [--json]       UI audit (limited Python bridge or Rust)' \
+      '  crx <dir> [--json]         Chrome extension audit (Rust)' \
+      '  skills <query> [--json]    Local skills search (Rust)' \
+      '  mcp                        JSON-RPC stdio server (Rust)' \
+      '  rig <list|call>            Native tool interface (Rust)' \
+      '  get-skill <slug>           Read locally cached skill (Rust)' \
+      '  trace <init|step|show>     Local trace ledger (Rust)'
+    exit 0
+    ;;
+esac
+
+case "$COMMAND" in
+  contrast|audit) BRIDGE_SUPPORTED=1 ;;
   crx|skills|mcp|rig|get-skill|trace) BRIDGE_SUPPORTED=0 ;;
   *)
     echo "uim: unknown command '$COMMAND'. Available: contrast, audit, crx, skills, mcp, rig, get-skill, trace." >&2
