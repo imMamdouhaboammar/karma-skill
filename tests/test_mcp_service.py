@@ -4,6 +4,7 @@ import asyncio
 from contextlib import asynccontextmanager
 import importlib.util
 import sys
+import re
 import unittest
 from unittest.mock import patch
 
@@ -29,6 +30,14 @@ async def async_timeout(seconds: float):
 
 
 class MCPRecommendationTests(unittest.TestCase):
+    def test_reviewed_guide_binds_source_content_to_immutable_revision(self):
+        guide = mcp_service.get_skill_guide('matt-tdd', agent='codex')
+        self.assertRegex(guide['reviewed_revision'], r'^[0-9a-f]{40}$')
+        self.assertEqual(guide['reviewed_path'], 'skills/engineering/tdd')
+        self.assertIn(guide['reviewed_revision'], guide['installation_guide'])
+        self.assertIn('karma install matt-tdd', guide['installation_guide'])
+        self.assertNotIn('skills add mattpocock/skills', guide['installation_guide'])
+
     def test_recommend_only_reviewed_relevant_skills_with_commands(self):
         with patch('subprocess.run') as install, patch('urllib.request.urlopen') as network:
             result = mcp_service.recommend_skills(
